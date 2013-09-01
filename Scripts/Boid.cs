@@ -129,6 +129,6 @@ public class Boid : MonoBehaviour
     if( velocity.sqrMagnitude > epsilon * epsilon )
       gameObject.transform.rotation = Quaternion.LookRotation( velocity );
 
-    Debug.DrawRay( transform.position, velocity, Color.white );
+    Debug.DrawRay( transform.position, velocity, Color.grey );
   }
 }
