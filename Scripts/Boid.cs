@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+
 public class Boid : MonoBehaviour
 {
   public Vector3 velocity = Vector3.zero;
   public Vector3 destPos = new Vector3( 0, 0, 3 );
- 
+
+  const float epsilon = 1e-10f;
  
   // Use this for initialization
   void Start()
@@ -34,7 +37,7 @@ public class Boid : MonoBehaviour
       var revDir = transform.position - cur.transform.position;
       var dist = revDir.magnitude;
 
-      if( dist < 1e-5 ) // Do not take into account oneself
+      if( dist < epsilon ) // Do not take into account oneself
         continue;
 
       ++neighbourCount;
@@ -56,16 +59,17 @@ public class Boid : MonoBehaviour
     //Debug.DrawRay( transform.position, centeroid, Color.magenta );
     //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
 
-    var positionForce = 1 * (centeroid + collisionAvoidance);
-    var alignmentForce = 0.5f * (avgSpeed - velocity);
+    var positionForce = 2.0f * (centeroid + collisionAvoidance);
+    var alignmentForce = 0.2f * (avgSpeed - velocity);
 
     Debug.DrawRay( transform.position, positionForce, Color.cyan );
     Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
 
     //if( destPos != transform.position )
     //  velocity += ( destPos - transform.position ).normalized / 10;
+    var oldVelocityMemory = 0.2f;
 
-    velocity += (positionForce + alignmentForce) * Time.deltaTime;
+    velocity = (1 - oldVelocityMemory) * (positionForce + alignmentForce) * Time.deltaTime + oldVelocityMemory * velocity;
 
     var velMagn = velocity.magnitude;
 
@@ -74,7 +78,7 @@ public class Boid : MonoBehaviour
 
     transform.position += velocity * Time.deltaTime;
 
-    if( velMagn > 1e-5f )
+    if( velMagn > epsilon )
       gameObject.transform.rotation = Quaternion.LookRotation( velocity );
 
     Debug.DrawRay( transform.position, velocity, Color.white );
