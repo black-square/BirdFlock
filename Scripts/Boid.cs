@@ -27,41 +27,45 @@ public class Boid : MonoBehaviour
     var centeroid = Vector3.zero;
     var collisionAvoidance = Vector3.zero;
     var avgSpeed = Vector3.zero;
+    var neighbourCount = 0;
    
     foreach( var cur in neighbour )
     {
-      avgSpeed += cur.GetComponent<Boid>().velocity;
-
-      if( cur == this )
-        continue;
-
-      centeroid += cur.transform.position;
-     
       var revDir = transform.position - cur.transform.position;
       var dist = revDir.magnitude;
-       
-      if( dist > 1e-5 )
-      {
-        //simplify( revDir / dist * (optFactor / dist) );
-        collisionAvoidance += revDir * optFactor / ( dist * dist );
-      }
+
+      if( dist < 1e-5 ) // Do not take into account oneself
+        continue;
+
+      ++neighbourCount;
+
+      centeroid += cur.transform.position;
+
+      //simplify( revDir / dist * (optFactor / dist) );
+      collisionAvoidance += revDir * optFactor / ( dist * dist );
+
+      avgSpeed += cur.GetComponent<Boid>().velocity;
     }
-   
-    centeroid = centeroid / neighbour.Length - transform.position;
-    avgSpeed /= neighbour.Length * neighbour.Length;
+
+    if( neighbourCount > 0 )
+    {
+      centeroid = centeroid / neighbourCount - transform.position;
+      avgSpeed /= neighbourCount;
+    }
 
     //Debug.DrawRay( transform.position, centeroid, Color.magenta );
     //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
-    Debug.DrawRay( transform.position, avgSpeed, Color.yellow );
 
-    var destanationForce = centeroid + collisionAvoidance;
-    Debug.DrawRay( transform.position, destanationForce, Color.cyan );
-   
+    var positionForce = 1 * (centeroid + collisionAvoidance);
+    var alignmentForce = 0.5f * (avgSpeed - velocity);
+
+    Debug.DrawRay( transform.position, positionForce, Color.cyan );
+    Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
+
     //if( destPos != transform.position )
     //  velocity += ( destPos - transform.position ).normalized / 10;
 
-    var accel = destanationForce + avgSpeed / 0.5f;
-    velocity = accel * Time.deltaTime;
+    velocity += (positionForce + alignmentForce) * Time.deltaTime;
 
     var velMagn = velocity.magnitude;
 
@@ -69,7 +73,9 @@ public class Boid : MonoBehaviour
       velocity = velocity / velMagn * minSpeed;
 
     transform.position += velocity * Time.deltaTime;
-    gameObject.transform.rotation = Quaternion.LookRotation( velocity );
+
+    if( velMagn > 1e-5f )
+      gameObject.transform.rotation = Quaternion.LookRotation( velocity );
 
     Debug.DrawRay( transform.position, velocity, Color.white );
   }
