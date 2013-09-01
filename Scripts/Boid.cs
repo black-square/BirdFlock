@@ -19,9 +19,10 @@ public class Boid : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    var viewRadius = 0.3f;
+    var speedMultipliyer = 3.0f;
+    var viewRadius = 0.5f;
     var optDistance = 0.1f;
-    var minSpeed = 0.1f;
+    var minSpeed = 0.1f * speedMultipliyer;
 
     //solve( {optFactor / optDistance = optDistance / 2}, {optFactor} );
     var optFactor = optDistance * optDistance / 2;
@@ -34,51 +35,95 @@ public class Boid : MonoBehaviour
    
     foreach( var cur in neighbour )
     {
-      var revDir = transform.position - cur.transform.position;
-      var dist = revDir.magnitude;
+      if( cur is SphereCollider )
+      {
+        var revDir = transform.position - cur.transform.position;
+        var dist = revDir.magnitude;
 
-      if( dist < epsilon ) // Do not take into account oneself
-        continue;
+        if( dist < epsilon ) // Do not take into account oneself
+          continue;
 
-      ++neighbourCount;
+        ++neighbourCount;
 
-      centeroid += cur.transform.position;
+        centeroid += cur.transform.position;
 
-      //simplify( revDir / dist * (optFactor / dist) );
-      collisionAvoidance += revDir * optFactor / ( dist * dist );
+        //simplify( revDir / dist * (optFactor / dist) );
+        collisionAvoidance += revDir * optFactor / ( dist * dist );
 
-      avgSpeed += cur.GetComponent<Boid>().velocity;
+        avgSpeed += cur.GetComponent<Boid>().velocity;
+      }
+      else
+      {
+        var bc = cur as BoxCollider;
+  
+        if( bc )
+        {
+          var pointOnBounds = cur.ClosestPointOnBounds( transform.position );
+          RaycastHit hit;
+
+          if( cur.Raycast(new Ray(transform.position, pointOnBounds - transform.position), out hit, viewRadius) )
+          {
+            if( (hit.point - transform.position).sqrMagnitude < optDistance * optDistance )
+            {
+              var dist = (hit.point - transform.position).magnitude;
+
+              var curForce = hit.normal * 2 * optFactor / dist;
+              collisionAvoidance += curForce;
+              Debug.DrawRay( hit.point, curForce, Color.red );
+            }
+          }
+        }
+      }
     }
 
     if( neighbourCount > 0 )
     {
       centeroid = centeroid / neighbourCount - transform.position;
-      avgSpeed /= neighbourCount;
+      avgSpeed = avgSpeed / neighbourCount - velocity;
     }
 
     //Debug.DrawRay( transform.position, centeroid, Color.magenta );
     //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
 
     var positionForce = 2.0f * (centeroid + collisionAvoidance);
-    var alignmentForce = 0.2f * (avgSpeed - velocity);
+    var alignmentForce = 0.2f * avgSpeed;
 
     Debug.DrawRay( transform.position, positionForce, Color.cyan );
     Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
 
-    //if( destPos != transform.position )
-    //  velocity += ( destPos - transform.position ).normalized / 10;
-    var oldVelocityMemory = 0.2f;
+    {
+      var newVelocity = speedMultipliyer * (positionForce + alignmentForce) * Time.deltaTime;
+  
+      var velMagn = newVelocity.magnitude;
 
-    velocity = (1 - oldVelocityMemory) * (positionForce + alignmentForce) * Time.deltaTime + oldVelocityMemory * velocity;
+      if( velMagn > epsilon )
+      {
+        if( (velocity + newVelocity).sqrMagnitude > minSpeed * minSpeed )
+          velocity += newVelocity;
+        else
+        {
+          var velLen = velocity.magnitude;
+          var newVelLen = newVelocity.magnitude;
 
-    var velMagn = velocity.magnitude;
+          if( velLen > epsilon )
+            velocity /= velLen;
+          else
+          {
+            velocity = transform.rotation * Vector3.forward;
+            velLen = 1;
+          }
 
-    if( velMagn < minSpeed )
-      velocity = velocity / velMagn * minSpeed;
+          newVelocity /= newVelLen;
+
+          velocity = Vector3.Slerp( velocity, newVelocity,  newVelLen / (2 *velLen)  );
+          velocity *= minSpeed;
+        }
+      }
+    }
 
     transform.position += velocity * Time.deltaTime;
 
-    if( velMagn > epsilon )
+    if( velocity.sqrMagnitude > epsilon * epsilon )
       gameObject.transform.rotation = Quaternion.LookRotation( velocity );
 
     Debug.DrawRay( transform.position, velocity, Color.white );
