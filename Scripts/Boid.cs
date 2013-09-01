@@ -23,6 +23,7 @@ public class Boid : MonoBehaviour
     var viewRadius = 0.5f;
     var optDistance = 0.1f;
     var minSpeed = 0.1f * speedMultipliyer;
+    var oldVelocityMemory = 0.2f;
 
     //solve( {optFactor / optDistance = optDistance / 2}, {optFactor} );
     var optFactor = optDistance * optDistance / 2;
@@ -85,8 +86,8 @@ public class Boid : MonoBehaviour
     //Debug.DrawRay( transform.position, centeroid, Color.magenta );
     //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
 
-    var positionForce = 2.0f * (centeroid + collisionAvoidance);
-    var alignmentForce = 0.2f * avgSpeed;
+    var positionForce = 1.0f * (centeroid + collisionAvoidance);
+    var alignmentForce = 0.5f * avgSpeed;
 
     Debug.DrawRay( transform.position, positionForce, Color.cyan );
     Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
@@ -99,7 +100,9 @@ public class Boid : MonoBehaviour
       if( velMagn > epsilon )
       {
         if( (velocity + newVelocity).sqrMagnitude > minSpeed * minSpeed )
-          velocity += newVelocity;
+        {
+          velocity = (1 - oldVelocityMemory) * newVelocity + oldVelocityMemory * velocity;
+        }
         else
         {
           var velLen = velocity.magnitude;
