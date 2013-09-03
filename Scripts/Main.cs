@@ -7,8 +7,8 @@ public class Main : MonoBehaviour
   // Use this for initialization
   void Start()
   {
-    float count = 5; 
-    float size = 0.2f;
+    float count = 10; 
+    float size = 0.1f;
    
     for( int i = 0; i < count; ++i )
       for( int j = 0; j < count; ++j )
@@ -23,5 +23,11 @@ public class Main : MonoBehaviour
   void Update()
   {
  
+  }
+
+  void OnGUI()
+  {
+    if( GUI.Button(new Rect(0,0,80,20), "Restart") )
+      Application.LoadLevel (Application.loadedLevelName);
   }
 }
