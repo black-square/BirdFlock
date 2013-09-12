@@ -19,7 +19,7 @@ function Start () {
     y = angles.x;
 
 	// Make the rigid body not change rotation
-   	if (rigidbody)
+  if (rigidbody)
 		rigidbody.freezeRotation = true;
 }
 
@@ -27,7 +27,15 @@ function LateUpdate () {
     if (target) {
         x += Input.GetAxis("Mouse X") * xSpeed * 0.02;
         y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02;
-        distance -= Input.GetAxis("Mouse ScrollWheel") * zSpeed * 0.02;
+
+        var distRaw = -Input.GetAxis("Mouse ScrollWheel") * zSpeed;
+
+        if( Input.GetKey("up") )
+          --distRaw;
+        if( Input.GetKey("down") )
+          ++distRaw;
+
+        distance += distRaw * 0.02;
  		
         y = ClampAngle(y, yMinLimit, yMaxLimit);
  		       
