@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Boid : MonoBehaviour
 {
@@ -14,14 +15,24 @@ public class Boid : MonoBehaviour
 
   }
 
+  void OnGUI()
+  {
+    //GUI.Label( new Rect(0, 20,2000, 2000),  String.Format("Velocity {0}", velocity) );
+  }
+
+  static string ToS( Vector3 vec )
+  {
+    return String.Format("{0:0.00000}:[{1:0.00000}, {2:0.00000}, {3:0.00000}]", vec.magnitude, vec.x, vec.y, vec.z );
+  }
+
   // Update is called once per frame
   void Update()
   {
-    var speedMultipliyer = 1.0f;
+    var speedMultipliyer = 3.0f;
     var viewRadius = 0.5f;
     var optDistance = 0.1f;
     var minSpeed = 0.1f * speedMultipliyer;
-    var oldVelocityMemory = 0.0f;
+    var oldVelocityMemory = 0.01f; //Helps to avoid abrupt movements
 
     //Bird is affected by 3 forses:
     // centroid
@@ -98,38 +109,46 @@ public class Boid : MonoBehaviour
     var positionForce = 1.0f * (centeroid + collisionAvoidance);
     var alignmentForce = 0.5f * avgSpeed;
 
-    Debug.DrawRay( transform.position, positionForce, Color.cyan );
-    Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
-
     {
       var newVelocity = speedMultipliyer * (positionForce + alignmentForce) * Time.deltaTime;
-  
-      var velMagn = newVelocity.magnitude;
+      newVelocity = (1 - oldVelocityMemory) * newVelocity + oldVelocityMemory * velocity;
+      var newVelLen = newVelocity.magnitude;
 
-      if( velMagn > epsilon )
+      Debug.DrawRay( transform.position, velocity, Color.grey );
+      Debug.DrawRay( transform.position + velocity, positionForce, Color.cyan );
+      Debug.DrawRay( transform.position + velocity, alignmentForce, Color.yellow );
+
+      //print( String.Format("Velocity {0} <- {1}", ToS(velocity), ToS(newVelocity)) );
+
+      //Debug.DrawRay( transform.position + velocity, newVelocity, Color.magenta );
+
+      if( newVelLen > epsilon )
       {
-        if( (velocity + newVelocity).sqrMagnitude > minSpeed * minSpeed )
-        {
-          velocity = (1 - oldVelocityMemory) * newVelocity + oldVelocityMemory * velocity;
-        }
+        var velLen = velocity.magnitude;
+
+        if( velLen > epsilon )
+          velocity /= velLen;
         else
         {
-          var velLen = velocity.magnitude;
-          var newVelLen = newVelocity.magnitude;
-
-          if( velLen > epsilon )
-            velocity /= velLen;
-          else
-          {
-            velocity = transform.rotation * Vector3.forward;
-            velLen = 1;
-          }
-
-          newVelocity /= newVelLen;
-
-          velocity = Vector3.Slerp( velocity, newVelocity,  newVelLen / (2 *velLen)  );
-          velocity *= minSpeed;
+          velocity = transform.rotation * Vector3.forward;
+          velLen = 1;
         }
+
+        newVelocity /= newVelLen;
+
+        var rotReqLength = (1 - Vector3.Dot( newVelocity, velocity )) / (2 * velLen); //1 - cos(alpha)
+        var rotCoef = newVelLen * rotReqLength;
+
+        var resultLen = 0.0f;
+
+        if( rotCoef > 1 )
+          resultLen = (1.0f - rotCoef)/ rotReqLength;
+
+        if( resultLen < minSpeed )
+          resultLen = minSpeed;
+
+        velocity = Vector3.Slerp( velocity, newVelocity, rotCoef );
+        velocity *= resultLen;
       }
     }
 
@@ -137,7 +156,5 @@ public class Boid : MonoBehaviour
 
     if( velocity.sqrMagnitude > epsilon * epsilon )
       gameObject.transform.rotation = Quaternion.LookRotation( velocity );
-
-    Debug.DrawRay( transform.position, velocity, Color.grey );
   }
 }
