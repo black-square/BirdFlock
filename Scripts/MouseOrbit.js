@@ -1,5 +1,4 @@
 var target : Transform;
-var distance = 10.0;
 
 var xSpeed = 250.0;
 var ySpeed = 120.0;
@@ -10,17 +9,22 @@ var yMaxLimit = 80;
 
 private var x = 0.0;
 private var y = 0.0;
+private var distance = 10.0;
 
 @script AddComponentMenu("Camera-Control/Mouse Orbit")
 
-function Start () {
-    var angles = transform.eulerAngles;
-    x = angles.y;
-    y = angles.x;
+function Start () 
+{
+  var angles = transform.eulerAngles;
+  x = angles.y;
+  y = angles.x;
 
- // Make the rigid body not change rotation
+  if( target )
+    distance = (transform.position - target.transform.position).magnitude;
+
+  // Make the rigid body not change rotation
   if (rigidbody)
-   rigidbody.freezeRotation = true;
+    rigidbody.freezeRotation = true;
 }
 
 function LateUpdate ()
