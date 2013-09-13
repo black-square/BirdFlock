@@ -18,13 +18,15 @@ function Start () {
     x = angles.y;
     y = angles.x;
 
-	// Make the rigid body not change rotation
+ // Make the rigid body not change rotation
   if (rigidbody)
-		rigidbody.freezeRotation = true;
+   rigidbody.freezeRotation = true;
 }
 
-function LateUpdate () {
-    if (target) {
+function LateUpdate ()
+{
+    if (target)
+    {
         x += Input.GetAxis("Mouse X") * xSpeed * 0.02;
         y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02;
 
@@ -35,10 +37,10 @@ function LateUpdate () {
         if( Input.GetKey("down") )
           ++distRaw;
 
-        distance += distRaw * 0.02;
- 		
+        distance = Mathf.Max( distance + distRaw * 0.02, 0 );
+
         y = ClampAngle(y, yMinLimit, yMaxLimit);
- 		       
+
         var rotation = Quaternion.Euler(y, x, 0);
         var position = rotation * Vector3(0.0, 0.0, -distance) + target.position;
         
@@ -48,9 +50,9 @@ function LateUpdate () {
 }
 
 static function ClampAngle (angle : float, min : float, max : float) {
-	if (angle < -360)
-		angle += 360;
-	if (angle > 360)
-		angle -= 360;
-	return Mathf.Clamp (angle, min, max);
+ if (angle < -360)
+   angle += 360;
+ if (angle > 360)
+   angle -= 360;
+ return Mathf.Clamp (angle, min, max);
 }
