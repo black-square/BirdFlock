@@ -44,12 +44,12 @@ public class Boid : MonoBehaviour
 
     // restart;
     // f := x-> factor2*(factor1/x - 1);
-    // Mult := 2; #When collision occurs between birds each bird has a force vector and total force is twise bigger than between wall and bird. That's why we're  multiplying force
+    // Mult := 2 * speedMultipliyer; #When collision occurs between birds each bird has a force vector and total force is twise bigger than between wall and bird. That's why we're  multiplying force
     // F := { f(viewRadius) = 0, f(optDistance) = Mult * optFactor/optDistance };
     // Res := solve( F, {factor1, factor2} );
     // RealConsts := {viewRadius = 0.5, optDistance = 0.1, optFactor = 0.005};
     // plot( eval(f(x), eval(Res, RealConsts) ), x = 0..eval(viewRadius, RealConsts) );
-    var optFactorWalls = 2 * optFactor / (viewRadius - optDistance);
+    var optFactorWalls = 2 * speedMultipliyer * optFactor / (viewRadius - optDistance);
 
     var neighbour = Physics.OverlapSphere( transform.position, viewRadius );
     var centeroid = Vector3.zero;
