@@ -5,8 +5,6 @@ using System;
 public class Boid : MonoBehaviour
 {
   public Vector3 velocity = Vector3.zero;
-  public Vector3 destPos = new Vector3( 0, 0, 3 );
-
   const float epsilon = 1e-10f;
  
   // Use this for initialization
@@ -33,6 +31,7 @@ public class Boid : MonoBehaviour
     var optDistance = 0.1f;
     var minSpeed = 0.1f * speedMultipliyer;
     var oldVelocityMemory = 0.0f; //Helps to avoid abrupt movements
+    var inclineFactor = 300.0f / speedMultipliyer;
 
     //Bird is affected by 3 forses:
     // centroid
@@ -117,58 +116,76 @@ public class Boid : MonoBehaviour
 
     var positionForce = 1.0f * (centeroid + collisionAvoidance);
     var alignmentForce = 0.5f * avgSpeed;
+    var totalForce = (positionForce + alignmentForce);
 
+    var newVelocity = speedMultipliyer * totalForce * Time.deltaTime;
+
+    Debug.DrawRay( transform.position, velocity, Color.grey );
+    Debug.DrawRay( transform.position + velocity, positionForce, Color.cyan );
+    Debug.DrawRay( transform.position + velocity, alignmentForce, Color.yellow );
+
+    //print( String.Format("Velocity {0} <- {1}", ToS(velocity), ToS(newVelocity)) );
+
+    //Debug.DrawRay( transform.position + velocity, newVelocity, Color.magenta );
+
+
+    var oldVelocity = velocity;
+    var velLen = velocity.magnitude;
+
+    if( velLen > epsilon )
+      velocity /= velLen;
+    else
     {
-      var newVelocity = speedMultipliyer * (positionForce + alignmentForce) * Time.deltaTime;
-
-
-      Debug.DrawRay( transform.position, velocity, Color.grey );
-      Debug.DrawRay( transform.position + velocity, positionForce, Color.cyan );
-      Debug.DrawRay( transform.position + velocity, alignmentForce, Color.yellow );
-
-      //print( String.Format("Velocity {0} <- {1}", ToS(velocity), ToS(newVelocity)) );
-
-      //Debug.DrawRay( transform.position + velocity, newVelocity, Color.magenta );
-
-
-      var oldVelocity = velocity;
-      var velLen = velocity.magnitude;
-
-      if( velLen > epsilon )
-        velocity /= velLen;
-      else
-      {
-        velocity = transform.rotation * Vector3.forward;
-        velLen = 1;
-      }
-
-      var newVelLen = newVelocity.magnitude;
-
-      var resultLen = minSpeed;
-
-      if( newVelLen > epsilon )
-      {
-        newVelocity /= newVelLen;
-
-        var angleFactor = (1 - Vector3.Dot(newVelocity, velocity)) / 2; //smartplot((1-cos(x))/2);
-        var rotReqLength = angleFactor / (2 * velLen);
-        var rotationFactor = newVelLen * rotReqLength;
-
-        if( rotationFactor > 1 )
-          resultLen = (1.0f - rotationFactor) / rotReqLength;
-
-        velocity = Vector3.Slerp( velocity, newVelocity, rotationFactor );
-
-        if( resultLen < minSpeed )
-          resultLen = minSpeed;
-      }
-
-      velocity = (1 - oldVelocityMemory) * (velocity * resultLen) + oldVelocityMemory * oldVelocity;
+      velocity = transform.rotation * Vector3.forward;
+      velLen = 1;
     }
 
-    transform.position += velocity * Time.deltaTime;
+    var newVelLen = newVelocity.magnitude;
+    var resultLen = minSpeed;
 
-    if( velocity.sqrMagnitude > epsilon * epsilon )
-      gameObject.transform.rotation = Quaternion.LookRotation( velocity );
+    if( newVelLen > epsilon )
+    {
+      newVelocity /= newVelLen;
+
+      var angleFactor = (1 - Vector3.Dot(newVelocity, velocity)) / 2; //smartplot((1-cos(x))/2);
+      var rotReqLength = angleFactor / (2 * velLen);
+      var rotationFactor = newVelLen * rotReqLength;
+
+      if( rotationFactor > 1 )
+        resultLen = (1.0f - rotationFactor) / rotReqLength;
+
+      velocity = Vector3.Slerp( velocity, newVelocity, rotationFactor );
+
+      if( resultLen < minSpeed )
+        resultLen = minSpeed;
+    }
+
+    velocity = (1 - oldVelocityMemory) * (velocity * resultLen) + oldVelocityMemory * oldVelocity;
+
+    var rightVec = RightVectorXZProjected(velocity);
+    var inclineDeg = VecProjectedLength( totalForce, rightVec ) * -inclineFactor;
+    transform.position += velocity * Time.deltaTime;
+    gameObject.transform.rotation = Quaternion.LookRotation( velocity ) * Quaternion.AngleAxis(Mathf.Clamp(inclineDeg, -90, 90), Vector3.forward);
+  }
+
+  static float AngleXZProjected( Vector3 vec1, Vector3 vec2 )
+  {
+    vec1.y = 0;
+    vec2.y = 0;
+
+    return Vector3.Angle( vec1, vec2);
+  }
+
+  static Vector3 RightVectorXZProjected( Vector3 vec )
+  {
+    vec.y = 0;
+    return Quaternion.AngleAxis(90, Vector3.up) * vec;
+    //Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * Vector3.right
+  }
+
+  static float VecProjectedLength( Vector3 vec, Vector3 vecNormal )
+  {
+    var proj = Vector3.Project( vec, vecNormal );
+    return proj.magnitude  * Mathf.Sign( Vector3.Dot(proj, vecNormal) );
   }
 }
