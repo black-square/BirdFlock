@@ -32,7 +32,7 @@ public class Boid : MonoBehaviour
     var viewRadius = 0.5f;
     var optDistance = 0.1f;
     var minSpeed = 0.1f * speedMultipliyer;
-    var oldVelocityMemory = 0.01f; //Helps to avoid abrupt movements
+    var oldVelocityMemory = 0.000f; //Helps to avoid abrupt movements
 
     //Bird is affected by 3 forses:
     // centroid
@@ -49,7 +49,16 @@ public class Boid : MonoBehaviour
     // Res := solve( F, {factor1, factor2} );
     // RealConsts := {viewRadius = 0.5, optDistance = 0.1, optFactor = 0.005};
     // plot( eval(f(x), eval(Res, RealConsts) ), x = 0..eval(viewRadius, RealConsts) );
-    var optFactorWalls = 2 * speedMultipliyer * optFactor / (viewRadius - optDistance);
+
+#if !NOT_DEFINED
+    var optFactor1Walls = viewRadius;
+    var optFactor2Walls = 2 * speedMultipliyer * optFactor / (viewRadius - optDistance);
+    Func<float, float> walsForceDlg = dist => optFactor2Walls * (optFactor1Walls / dist - 1);
+#else
+    var optFactor1Walls = viewRadius * viewRadius;
+    var optFactor2Walls = 2*speedMultipliyer*optFactor*optDistance/(viewRadius * viewRadius - optDistance * optDistance);
+    Func<float, float> walsForceDlg = dist => optFactor2Walls * (optFactor1Walls / (dist * dist) - 1);
+#endif
 
     var neighbour = Physics.OverlapSphere( transform.position, viewRadius );
     var centeroid = Vector3.zero;
@@ -89,7 +98,7 @@ public class Boid : MonoBehaviour
           {
             var revDir = transform.position - hit.point;
             var dist = revDir.magnitude;
-            var curForce = revDir / dist * optFactorWalls * (viewRadius / dist - 1);
+            var curForce = revDir / dist * walsForceDlg(dist);
             collisionAvoidance += curForce;
             Debug.DrawRay( hit.point, curForce, Color.red );
           }
