@@ -120,7 +120,7 @@ public class Boid : MonoBehaviour
 
     {
       var newVelocity = speedMultipliyer * (positionForce + alignmentForce) * Time.deltaTime;
-      var newVelLen = newVelocity.magnitude;
+
 
       Debug.DrawRay( transform.position, velocity, Color.grey );
       Debug.DrawRay( transform.position + velocity, positionForce, Color.cyan );
@@ -130,36 +130,40 @@ public class Boid : MonoBehaviour
 
       //Debug.DrawRay( transform.position + velocity, newVelocity, Color.magenta );
 
+
+      var oldVelocity = velocity;
+      var velLen = velocity.magnitude;
+
+      if( velLen > epsilon )
+        velocity /= velLen;
+      else
+      {
+        velocity = transform.rotation * Vector3.forward;
+        velLen = 1;
+      }
+
+      var newVelLen = newVelocity.magnitude;
+
+      var resultLen = minSpeed;
+
       if( newVelLen > epsilon )
       {
-        var oldVelocity = velocity;
-        var velLen = velocity.magnitude;
-
-        if( velLen > epsilon )
-          velocity /= velLen;
-        else
-        {
-          velocity = transform.rotation * Vector3.forward;
-          velLen = 1;
-        }
-
         newVelocity /= newVelLen;
 
         var angleFactor = (1 - Vector3.Dot(newVelocity, velocity)) / 2; //smartplot((1-cos(x))/2);
         var rotReqLength = angleFactor / (2 * velLen);
         var rotationFactor = newVelLen * rotReqLength;
 
-        var resultLen = 0.0f;
-
         if( rotationFactor > 1 )
           resultLen = (1.0f - rotationFactor) / rotReqLength;
 
+        velocity = Vector3.Slerp( velocity, newVelocity, rotationFactor );
+
         if( resultLen < minSpeed )
           resultLen = minSpeed;
-
-        velocity = Vector3.Slerp( velocity, newVelocity, rotationFactor );
-        velocity = (1 - oldVelocityMemory) * (velocity * resultLen) + oldVelocityMemory * oldVelocity;
       }
+
+      velocity = (1 - oldVelocityMemory) * (velocity * resultLen) + oldVelocityMemory * oldVelocity;
     }
 
     transform.position += velocity * Time.deltaTime;
