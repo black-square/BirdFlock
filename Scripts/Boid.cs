@@ -32,7 +32,7 @@ public class Boid : MonoBehaviour
     var viewRadius = 0.5f;
     var optDistance = 0.1f;
     var minSpeed = 0.1f * speedMultipliyer;
-    var oldVelocityMemory = 0.5f; //Helps to avoid abrupt movements
+    var oldVelocityMemory = 0.0f; //Helps to avoid abrupt movements
 
     //Bird is affected by 3 forses:
     // centroid
@@ -145,21 +145,20 @@ public class Boid : MonoBehaviour
 
         newVelocity /= newVelLen;
 
-        var rotReqLength = (1 - Vector3.Dot( newVelocity, velocity )) / (2 * velLen); //1 - cos(alpha)
-        var rotCoef = newVelLen * rotReqLength;
+        var angleFactor = (1 - Vector3.Dot(newVelocity, velocity)) / 2; //smartplot((1-cos(x))/2);
+        var rotReqLength = angleFactor / (2 * velLen);
+        var rotationFactor = newVelLen * rotReqLength;
 
         var resultLen = 0.0f;
 
-        if( rotCoef > 1 )
-          resultLen = (1.0f - rotCoef)/ rotReqLength;
+        if( rotationFactor > 1 )
+          resultLen = (1.0f - rotationFactor) / rotReqLength;
 
         if( resultLen < minSpeed )
           resultLen = minSpeed;
 
-        velocity = Vector3.Slerp( velocity, newVelocity, rotCoef );
-        velocity *= resultLen;
-
-        velocity = (1 - oldVelocityMemory) * velocity + oldVelocityMemory * oldVelocity;
+        velocity = Vector3.Slerp( velocity, newVelocity, rotationFactor );
+        velocity = (1 - oldVelocityMemory) * (velocity * resultLen) + oldVelocityMemory * oldVelocity;
       }
     }
 
