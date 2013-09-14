@@ -32,7 +32,7 @@ public class Boid : MonoBehaviour
     var viewRadius = 0.5f;
     var optDistance = 0.1f;
     var minSpeed = 0.1f * speedMultipliyer;
-    var oldVelocityMemory = 0.000f; //Helps to avoid abrupt movements
+    var oldVelocityMemory = 0.5f; //Helps to avoid abrupt movements
 
     //Bird is affected by 3 forses:
     // centroid
@@ -120,7 +120,6 @@ public class Boid : MonoBehaviour
 
     {
       var newVelocity = speedMultipliyer * (positionForce + alignmentForce) * Time.deltaTime;
-      newVelocity = (1 - oldVelocityMemory) * newVelocity + oldVelocityMemory * velocity;
       var newVelLen = newVelocity.magnitude;
 
       Debug.DrawRay( transform.position, velocity, Color.grey );
@@ -133,6 +132,7 @@ public class Boid : MonoBehaviour
 
       if( newVelLen > epsilon )
       {
+        var oldVelocity = velocity;
         var velLen = velocity.magnitude;
 
         if( velLen > epsilon )
@@ -158,6 +158,8 @@ public class Boid : MonoBehaviour
 
         velocity = Vector3.Slerp( velocity, newVelocity, rotCoef );
         velocity *= resultLen;
+
+        velocity = (1 - oldVelocityMemory) * velocity + oldVelocityMemory * oldVelocity;
       }
     }
 
