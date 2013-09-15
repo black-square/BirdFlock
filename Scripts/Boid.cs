@@ -10,7 +10,6 @@ public class Boid : MonoBehaviour
   const float viewRadius = 0.5f;
   const float optDistance = 0.1f;
   const float minSpeed = 0.1f * speedMultipliyer;
-  const float oldVelocityMemory = 0.0f; //Helps to avoid abrupt movements
   const float inclineFactor = 300.0f / speedMultipliyer;
 
   public Vector3 velocity = Vector3.zero;
@@ -114,10 +113,9 @@ public class Boid : MonoBehaviour
 
   void Update()
   {
-
     //Bird is affected by 3 forses:
-    // centroid
-    // collisionAvoidance
+    // cohesion
+    // separation + collisionAvoidance
     // alignmentForce
 
     SeparationForce sepForce;
@@ -168,10 +166,6 @@ public class Boid : MonoBehaviour
 
     var newVelocity = speedMultipliyer * totalForce * Time.deltaTime;
 
-    Debug.DrawRay( transform.position, velocity, Color.grey );
-    Debug.DrawRay( transform.position, positionForce, Color.cyan );
-    Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
-
     var oldVelocity = velocity;
     var velLen = velocity.magnitude;
 
@@ -203,12 +197,14 @@ public class Boid : MonoBehaviour
         resultLen = minSpeed;
     }
 
-    velocity = (1 - oldVelocityMemory) * (velocity * resultLen) + oldVelocityMemory * oldVelocity;
+    velocity = velocity * resultLen;
 
-    var rightVec = RightVectorXZProjected(velocity);
-    var inclineDeg = VecProjectedLength( totalForce, rightVec ) * -inclineFactor;
     transform.position += velocity * Time.deltaTime;
-    gameObject.transform.rotation = Quaternion.LookRotation( velocity ) * Quaternion.AngleAxis(Mathf.Clamp(inclineDeg, -90, 90), Vector3.forward);
+    gameObject.transform.rotation = CalcRotation( velocity, totalForce );
+
+    Debug.DrawRay( transform.position, velocity, Color.grey );
+    Debug.DrawRay( transform.position, positionForce, Color.cyan );
+    Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
   }
 
   static string ToS( Vector3 vec )
@@ -235,5 +231,12 @@ public class Boid : MonoBehaviour
   {
     var proj = Vector3.Project( vec, vecNormal );
     return proj.magnitude  * Mathf.Sign( Vector3.Dot(proj, vecNormal) );
+  }
+
+  static Quaternion CalcRotation( Vector3 velocity, Vector3 totalForce )
+  {
+    var rightVec = RightVectorXZProjected(velocity);
+    var inclineDeg = VecProjectedLength( totalForce, rightVec ) * -inclineFactor;
+    return Quaternion.LookRotation( velocity ) * Quaternion.AngleAxis(Mathf.Clamp(inclineDeg, -90, 90), Vector3.forward);
   }
 }
