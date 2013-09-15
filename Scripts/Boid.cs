@@ -165,39 +165,7 @@ public class Boid : MonoBehaviour
     var totalForce = (positionForce + alignmentForce);
 
     var newVelocity = speedMultipliyer * totalForce * Time.deltaTime;
-
-    var oldVelocity = velocity;
-    var velLen = velocity.magnitude;
-
-    if( velLen > epsilon )
-      velocity /= velLen;
-    else
-    {
-      velocity = transform.rotation * Vector3.forward;
-      velLen = 1;
-    }
-
-    var newVelLen = newVelocity.magnitude;
-    var resultLen = minSpeed;
-
-    if( newVelLen > epsilon )
-    {
-      newVelocity /= newVelLen;
-
-      var angleFactor = (1 - Vector3.Dot(newVelocity, velocity)) / 2; //smartplot((1-cos(x))/2);
-      var rotReqLength = angleFactor / (2 * velLen);
-      var rotationFactor = newVelLen * rotReqLength;
-
-      if( rotationFactor > 1 )
-        resultLen = (1.0f - rotationFactor) / rotReqLength;
-
-      velocity = Vector3.Slerp( velocity, newVelocity, rotationFactor );
-
-      if( resultLen < minSpeed )
-        resultLen = minSpeed;
-    }
-
-    velocity = velocity * resultLen;
+    velocity = CalcNewVelocity( velocity, newVelocity, transform.rotation * Vector3.forward );
 
     transform.position += velocity * Time.deltaTime;
     gameObject.transform.rotation = CalcRotation( velocity, totalForce );
@@ -205,6 +173,41 @@ public class Boid : MonoBehaviour
     Debug.DrawRay( transform.position, velocity, Color.grey );
     Debug.DrawRay( transform.position, positionForce, Color.cyan );
     Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
+  }
+
+  static Vector3 CalcNewVelocity( Vector3 curVel, Vector3 dsrVel, Vector3 defaultVelocity )
+  {
+    var curVelLen = curVel.magnitude;
+
+    if( curVelLen > epsilon )
+      curVel /= curVelLen;
+    else
+    {
+      curVel = defaultVelocity;
+      curVelLen = 1;
+    }
+
+    var dsrVelLen = dsrVel.magnitude;
+    var resultLen = minSpeed;
+
+    if( dsrVelLen > epsilon )
+    {
+      dsrVel /= dsrVelLen;
+
+      var angleFactor = ( 1 - Vector3.Dot(dsrVel, curVel) ) / 2; //smartplot((1-cos(x))/2);
+      var rotReqLength = angleFactor / (2 * curVelLen);
+      var rotationFactor = dsrVelLen * rotReqLength;
+
+      if( rotationFactor > 1 )
+        resultLen = (rotationFactor - 1.0f) / rotReqLength;
+
+      curVel = Vector3.Slerp( curVel, dsrVel, rotationFactor );
+
+      if( resultLen < minSpeed )
+        resultLen = minSpeed;
+    }
+
+    return curVel * resultLen;
   }
 
   static string ToS( Vector3 vec )
