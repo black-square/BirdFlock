@@ -4,103 +4,151 @@ using System;
 
 public class Boid : MonoBehaviour
 {
-  public Vector3 velocity = Vector3.zero;
   const float epsilon = 1e-10f;
- 
-  // Use this for initialization
-  void Start()
+
+  const float speedMultipliyer = 3.0f;
+  const float viewRadius = 0.5f;
+  const float optDistance = 0.1f;
+  const float minSpeed = 0.1f * speedMultipliyer;
+  const float oldVelocityMemory = 0.0f; //Helps to avoid abrupt movements
+  const float inclineFactor = 300.0f / speedMultipliyer;
+
+  public Vector3 velocity = Vector3.zero;
+
+  struct SeparationForce
   {
+    public bool Calc( Vector3 cur, Vector3 other, out Vector3 force )
+    {
+      var revDir = cur - other;
+      var dist = revDir.magnitude;
 
-  }
+      force = Vector3.zero;
 
-  void OnGUI()
+      if( dist < epsilon ) // Do not take into account oneself
+        return false;
+
+      //simplify( revDir / dist * (optFactor / dist) );
+      force = revDir * optFactor / ( dist * dist );
+      return true;
+    }
+
+    public float Calc( float dist )
+    {
+      return optFactor/ dist;
+    }
+
+    //We have to compensate cohesion force which in optDistance point
+    //equals optDistance / 2
+    //solve( {optFactor / optDistance = optDistance / 2}, {optFactor} );
+    const float optFactor = optDistance * optDistance / 2;
+  };
+
+  struct CollisionAvoidanceForce
   {
-    //GUI.Label( new Rect(0, 20,2000, 2000),  String.Format("Velocity {0}", velocity) );
-  }
+    public CollisionAvoidanceForce( float sepForceAtOptDistance, bool useSquareFunction )
+    {
+      // Maple:
+      // restart;
+      // f := x-> factor2*(factor1/x^2 - 1);
+      // Mult := 2 * speedMultipliyer; #When collision occurs between birds each bird has a force vector and total force is twise bigger than between wall and bird. That's why we're  multiplying force
+      // F := { f(viewRadius) = 0, f(optDistance) = Mult * sepForceAtOptDistance }:
+      // Res := solve( F, {factor1, factor2} );
+      // RealConsts := {viewRadius = 0.5, optDistance = 0.1, sepForceAtOptDistance = 0.05, speedMultipliyer = 3};
+      // plot( eval(f(x), eval(Res, RealConsts) ), x = 0..eval(viewRadius, RealConsts) );
+      forceDlg = null;
 
-  static string ToS( Vector3 vec )
-  {
-    return String.Format("{0:0.00000}:[{1:0.00000}, {2:0.00000}, {3:0.00000}]", vec.magnitude, vec.x, vec.y, vec.z );
-  }
+      if( useSquareFunction )
+      {
+        var viewRadius2 = viewRadius * viewRadius;
+        var optDistance2 = optDistance * optDistance;
+        factor1 = viewRadius2;
+        factor2 = -2 * speedMultipliyer * sepForceAtOptDistance * optDistance2 / ( optDistance2 - viewRadius2 );
+        forceDlg = CalcImplSquared;
+      }
+      else
+      {
+        factor1 = viewRadius;
+        factor2 = -2 * speedMultipliyer * sepForceAtOptDistance * optDistance / ( optDistance - viewRadius );
+        forceDlg = CalcImplLinear;
+      }
+    }
 
-  // Update is called once per frame
+    public struct Force
+    {
+      public Vector3 dir;
+      public Vector3 pos;
+    };
+
+    public bool Calc( Vector3 cur, Collider cld, out Force force )
+    {
+      var pointOnBounds = cld.ClosestPointOnBounds( cur );
+      RaycastHit hit;
+
+      force = new Force();
+
+      if( !cld.Raycast(new Ray(cur, pointOnBounds - cur), out hit, viewRadius) )
+        return false;
+
+      var revDir = cur - hit.point;
+      var dist = revDir.magnitude;
+      force.dir = revDir / dist * forceDlg(dist);
+      force.pos = hit.point;
+      return true;
+    }
+
+    float CalcImplLinear( float dist )
+    {
+      return factor2 * (factor1 / dist - 1);
+    }
+
+    float CalcImplSquared( float dist )
+    {
+      return factor2 * (factor1 / (dist * dist) - 1);
+    }
+
+    delegate float ForceDlg(float dist);
+    readonly float factor1;
+    readonly float factor2;
+    readonly ForceDlg forceDlg;
+  };
+
   void Update()
   {
-    var speedMultipliyer = 3.0f;
-    var viewRadius = 0.5f;
-    var optDistance = 0.1f;
-    var minSpeed = 0.1f * speedMultipliyer;
-    var oldVelocityMemory = 0.0f; //Helps to avoid abrupt movements
-    var inclineFactor = 300.0f / speedMultipliyer;
 
     //Bird is affected by 3 forses:
     // centroid
     // collisionAvoidance
     // alignmentForce
 
-    //solve( {optFactor / optDistance = optDistance / 2}, {optFactor} );
-    var optFactor = optDistance * optDistance / 2;
+    SeparationForce sepForce;
+    CollisionAvoidanceForce collAvoid = new CollisionAvoidanceForce( sepForce.Calc(optDistance), false);
 
-    // restart;
-    // f := x-> factor2*(factor1/x - 1);
-    // Mult := 2 * speedMultipliyer; #When collision occurs between birds each bird has a force vector and total force is twise bigger than between wall and bird. That's why we're  multiplying force
-    // F := { f(viewRadius) = 0, f(optDistance) = Mult * optFactor/optDistance };
-    // Res := solve( F, {factor1, factor2} );
-    // RealConsts := {viewRadius = 0.5, optDistance = 0.1, optFactor = 0.005};
-    // plot( eval(f(x), eval(Res, RealConsts) ), x = 0..eval(viewRadius, RealConsts) );
-
-#if !NOT_DEFINED
-    var optFactor1Walls = viewRadius;
-    var optFactor2Walls = 2 * speedMultipliyer * optFactor / (viewRadius - optDistance);
-    Func<float, float> walsForceDlg = dist => optFactor2Walls * (optFactor1Walls / dist - 1);
-#else
-    var optFactor1Walls = viewRadius * viewRadius;
-    var optFactor2Walls = 2*speedMultipliyer*optFactor*optDistance/(viewRadius * viewRadius - optDistance * optDistance);
-    Func<float, float> walsForceDlg = dist => optFactor2Walls * (optFactor1Walls / (dist * dist) - 1);
-#endif
-
-    var neighbour = Physics.OverlapSphere( transform.position, viewRadius );
     var centeroid = Vector3.zero;
     var collisionAvoidance = Vector3.zero;
     var avgSpeed = Vector3.zero;
     var neighbourCount = 0;
    
-    foreach( var cur in neighbour )
+    foreach( var cur in Physics.OverlapSphere(transform.position, viewRadius) )
     {
       if( cur is SphereCollider )
       {
-        var revDir = transform.position - cur.transform.position;
-        var dist = revDir.magnitude;
+        Vector3 separationForce;
 
-        if( dist < epsilon ) // Do not take into account oneself
+        if( !sepForce.Calc(transform.position, cur.transform.position, out separationForce) )
           continue;
 
+        collisionAvoidance += separationForce;
         ++neighbourCount;
-
         centeroid += cur.transform.position;
-
-        //simplify( revDir / dist * (optFactor / dist) );
-        collisionAvoidance += revDir * optFactor / ( dist * dist );
-
         avgSpeed += cur.GetComponent<Boid>().velocity;
       }
-      else
+      else if( cur is BoxCollider )
       {
-        var bc = cur as BoxCollider;
-  
-        if( bc )
+        CollisionAvoidanceForce.Force force;
+        if( collAvoid.Calc(transform.position, cur, out force) )
         {
-          var pointOnBounds = cur.ClosestPointOnBounds( transform.position );
-          RaycastHit hit;
-
-          if( cur.Raycast(new Ray(transform.position, pointOnBounds - transform.position), out hit, viewRadius) )
-          {
-            var revDir = transform.position - hit.point;
-            var dist = revDir.magnitude;
-            var curForce = revDir / dist * walsForceDlg(dist);
-            collisionAvoidance += curForce;
-            Debug.DrawRay( hit.point, curForce, Color.red );
-          }
+          collisionAvoidance += force.dir;
+          Debug.DrawRay( force.pos, force.dir, Color.red );
         }
       }
     }
@@ -121,13 +169,8 @@ public class Boid : MonoBehaviour
     var newVelocity = speedMultipliyer * totalForce * Time.deltaTime;
 
     Debug.DrawRay( transform.position, velocity, Color.grey );
-    Debug.DrawRay( transform.position + velocity, positionForce, Color.cyan );
-    Debug.DrawRay( transform.position + velocity, alignmentForce, Color.yellow );
-
-    //print( String.Format("Velocity {0} <- {1}", ToS(velocity), ToS(newVelocity)) );
-
-    //Debug.DrawRay( transform.position + velocity, newVelocity, Color.magenta );
-
+    Debug.DrawRay( transform.position, positionForce, Color.cyan );
+    Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
 
     var oldVelocity = velocity;
     var velLen = velocity.magnitude;
@@ -166,6 +209,11 @@ public class Boid : MonoBehaviour
     var inclineDeg = VecProjectedLength( totalForce, rightVec ) * -inclineFactor;
     transform.position += velocity * Time.deltaTime;
     gameObject.transform.rotation = Quaternion.LookRotation( velocity ) * Quaternion.AngleAxis(Mathf.Clamp(inclineDeg, -90, 90), Vector3.forward);
+  }
+
+  static string ToS( Vector3 vec )
+  {
+    return String.Format("{0:0.00000}:[{1:0.00000}, {2:0.00000}, {3:0.00000}]", vec.magnitude, vec.x, vec.y, vec.z );
   }
 
   static float AngleXZProjected( Vector3 vec1, Vector3 vec2 )
