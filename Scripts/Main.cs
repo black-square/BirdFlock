@@ -4,19 +4,22 @@ using System.Collections;
 public class Main : MonoBehaviour
 {
   public Object prefab;
-  // Use this for initialization
+  public Object cameraObject;
+
   void Start()
   {
-    float count = 10; 
+    int count = 10;
     float size = 0.1f;
-   
-    for( int i = 0; i < count; ++i )
-      for( int j = 0; j < count; ++j )
+    int lbrd = -count / 2;
+    int rbrd = lbrd + count;
+
+
+    for( int i = lbrd; i < rbrd; ++i )
+      for( int j = lbrd; j < rbrd; ++j )
         Instantiate( prefab, new Vector3(
-          size * i - size * count / 2,
-          size * j - size * count / 2,
-          1 + Random.Range( -size/2, size/2 ) ),
-          Quaternion.identity );
+          size * i, size * j,
+          1 + Random.Range( -size, size ) ),
+          Quaternion.Euler( Random.Range(-90, 90), Random.Range(-180, 180), 0) );
   }
  
   // Update is called once per frame

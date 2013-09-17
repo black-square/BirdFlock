@@ -161,7 +161,7 @@ public class Boid : MonoBehaviour
     //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
 
     var positionForce = 1.0f * (centeroid + collisionAvoidance);
-    var alignmentForce = 0.5f * avgSpeed;
+    var alignmentForce = 0.0005f * avgSpeed / Time.deltaTime;
     var totalForce = (positionForce + alignmentForce);
 
     var newVelocity = speedMultipliyer * totalForce * Time.deltaTime;
