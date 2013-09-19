@@ -4,7 +4,7 @@ using System.Collections;
 public class Main : MonoBehaviour
 {
   public Object prefab;
-  public Object cameraObject;
+  public Transform cameraObject;
 
   void Start()
   {
@@ -16,9 +16,9 @@ public class Main : MonoBehaviour
 
     for( int i = lbrd; i < rbrd; ++i )
       for( int j = lbrd; j < rbrd; ++j )
-        Instantiate( prefab, new Vector3(
+        Instantiate( prefab, cameraObject.position + new Vector3(
           size * i, size * j,
-          1 + Random.Range( -size, size ) ),
+          Random.Range( -size, size ) ),
           Quaternion.Euler( Random.Range(-90, 90), Random.Range(-180, 180), 0) );
   }
  
