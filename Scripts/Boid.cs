@@ -160,11 +160,11 @@ public class Boid : MonoBehaviour
     //Debug.DrawRay( transform.position, centeroid, Color.magenta );
     //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
 
-    var positionForce = 1.0f * (centeroid + collisionAvoidance);
-    var alignmentForce = 0.0005f * avgSpeed / Time.deltaTime;
-    var totalForce = (positionForce + alignmentForce);
+    var positionForce = 1.0f * speedMultipliyer * (centeroid + collisionAvoidance);
+    var alignmentForce = 0.001f * avgSpeed / Time.deltaTime;
+    var totalForce = 12 * (positionForce + alignmentForce);
 
-    var newVelocity = speedMultipliyer * totalForce * Time.deltaTime;
+    var newVelocity = totalForce * Time.deltaTime;
     velocity = CalcNewVelocity( velocity, newVelocity, transform.rotation * Vector3.forward );
 
     transform.position += velocity * Time.deltaTime;
