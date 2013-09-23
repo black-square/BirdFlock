@@ -111,7 +111,7 @@ public class Boid : MonoBehaviour
     readonly ForceDlg forceDlg;
   };
 
-  void Update()
+  void FixedUpdate()
   {
     //Bird is affected by 3 forses:
     // cohesion
@@ -164,15 +164,17 @@ public class Boid : MonoBehaviour
     var alignmentForce = 0.001f * avgSpeed / Time.deltaTime;
     var totalForce = 12 * (positionForce + alignmentForce);
 
-    var newVelocity = totalForce * Time.deltaTime;
-    velocity = CalcNewVelocity( velocity, newVelocity, transform.rotation * Vector3.forward );
-
-    transform.position += velocity * Time.deltaTime;
+    velocity = CalcNewVelocity( velocity, totalForce * Time.deltaTime, transform.rotation * Vector3.forward );
     gameObject.transform.rotation = CalcRotation( velocity, totalForce );
 
     Debug.DrawRay( transform.position, velocity, Color.grey );
     Debug.DrawRay( transform.position, positionForce, Color.cyan );
     Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
+  }
+
+  void Update()
+  {
+    transform.position += velocity * Time.deltaTime;
   }
 
   static Vector3 CalcNewVelocity( Vector3 curVel, Vector3 dsrVel, Vector3 defaultVelocity )
