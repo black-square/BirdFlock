@@ -11,6 +11,8 @@ public class Boid : MonoBehaviour
   const float optDistance = 0.1f;
   const float minSpeed = 0.1f * speedMultipliyer;
   const float inclineFactor = 300.0f / speedMultipliyer;
+  const float aligmentForcePart = 0.003f;
+  const float totalForceultipliyer = 12;
 
   public Vector3 velocity = Vector3.zero;
 
@@ -160,9 +162,9 @@ public class Boid : MonoBehaviour
     //Debug.DrawRay( transform.position, centeroid, Color.magenta );
     //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
 
-    var positionForce = 1.0f * speedMultipliyer * (centeroid + collisionAvoidance);
-    var alignmentForce = 0.001f * avgSpeed / Time.deltaTime;
-    var totalForce = 12 * (positionForce + alignmentForce);
+    var positionForce = (1.0f - aligmentForcePart) * speedMultipliyer * (centeroid + collisionAvoidance);
+    var alignmentForce = aligmentForcePart * avgSpeed / Time.deltaTime;
+    var totalForce = totalForceultipliyer * (positionForce + alignmentForce);
 
     velocity = CalcNewVelocity( velocity, totalForce * Time.deltaTime, transform.rotation * Vector3.forward );
     gameObject.transform.rotation = CalcRotation( velocity, totalForce );
