@@ -4,8 +4,8 @@ var xSpeed = 250.0;
 var ySpeed = 120.0;
 var zSpeed = 100.0;
 
-var yMinLimit = -20;
-var yMaxLimit = 80;
+var yMinLimit = -90;
+var yMaxLimit = 90;
 
 private var x = 0.0;
 private var y = 0.0;
