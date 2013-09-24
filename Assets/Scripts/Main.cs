@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Main : MonoBehaviour
 {
@@ -28,9 +27,34 @@ public class Main : MonoBehaviour
  
   }
 
+  private GuiTools guiTools = new GuiTools();
+
+  private float val = 12.3f;
+  private float val2 = 12.3f;
+  void SettingsWindow( int windowId )
+  {
+    guiTools.GuiFloatParam( ref val, "The long parameter name" );
+    guiTools.GuiFloatParam( ref val2, "The other parameter name" );
+  }
+
+  delegate void SimpleDlg();
+
+  private bool showSettingsWindow = true;
+
   void OnGUI()
   {
-    if( GUI.Button(new Rect(0,0,80,20), "Restart") )
-      Application.LoadLevel (Application.loadedLevelName);
+    var tlbLabels = new string[] { "Restart", "Settings" };
+    var tlbActions = new SimpleDlg[] {
+      () => Application.LoadLevel (Application.loadedLevelName),
+      () => showSettingsWindow = !showSettingsWindow
+    };
+
+    var tlbResult = GUILayout.Toolbar( -1, tlbLabels );
+
+    if( tlbResult >= 0 )
+      tlbActions[tlbResult]();
+
+    if( showSettingsWindow )
+      GUILayout.Window(0, new Rect(10, 30, 2, 2), SettingsWindow, "Test");
   }
 }
