@@ -83,17 +83,10 @@ public class Boid : MonoBehaviour
     public bool Calc( Vector3 cur, Collider cld, out Force force )
     {
       var pointOnBounds = cld.ClosestPointOnBounds( cur );
-      RaycastHit hit;
-
-      force = new Force();
-
-      if( !cld.Raycast(new Ray(cur, pointOnBounds - cur), out hit, viewRadius) )
-        return false;
-
-      var revDir = cur - hit.point;
+      var revDir = cur - pointOnBounds;
       var dist = revDir.magnitude;
       force.dir = revDir / dist * forceDlg(dist);
-      force.pos = hit.point;
+      force.pos = pointOnBounds;
       return true;
     }
 
