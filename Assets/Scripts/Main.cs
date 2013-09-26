@@ -4,6 +4,7 @@ public class Main : MonoBehaviour
 {
   public Object prefab;
   public Transform cameraObject;
+  static Boid.Settings settings = new Boid.Settings();
 
   void Start()
   {
@@ -15,10 +16,21 @@ public class Main : MonoBehaviour
 
     for( int i = lbrd; i < rbrd; ++i )
       for( int j = lbrd; j < rbrd; ++j )
-        Instantiate( prefab, cameraObject.position + new Vector3(
+      {
+        var obj = Instantiate( prefab,
+          cameraObject.position + new Vector3(
           size * i, size * j,
           Random.Range( -size, size ) ),
-          Quaternion.Euler( Random.Range(-90, 90), Random.Range(-180, 180), 0) );
+          Quaternion.Euler( Random.Range(-90, 90), Random.Range(-180, 180), 0)
+        ) as GameObject;
+
+        obj.GetComponent<Boid>().SettingsRef = settings;
+      }
+  }
+
+  public static Boid.Settings GetSettings( GameObject obj )
+  {
+    return settings;
   }
  
   // Update is called once per frame
@@ -29,17 +41,18 @@ public class Main : MonoBehaviour
 
   private GuiTools guiTools = new GuiTools();
 
-  private float val = 12.3f;
-  private float val2 = 12.3f;
   void SettingsWindow( int windowId )
   {
-    guiTools.GuiFloatParam( ref val, "The long parameter name" );
-    guiTools.GuiFloatParam( ref val2, "The other parameter name" );
+    guiTools.GuiFloatParam( ref settings.SpeedMultipliyer, "Speed", 20 );
+    guiTools.GuiFloatParam( ref settings.ViewRadius, "View distance", 20 );
+    guiTools.GuiFloatParam( ref settings.OptDistance, "Optimal distance between birds", 2 );
+    guiTools.GuiFloatParam( ref settings.AligmentForcePart, "Fraction of flock aligment force", 0.3f );
+    guiTools.GuiFloatParam( ref settings.TotalForceMultipliyer, "Reaction speed", 50 );
   }
 
   delegate void SimpleDlg();
 
-  private bool showSettingsWindow = true;
+  private bool showSettingsWindow = false;
 
   void OnGUI()
   {

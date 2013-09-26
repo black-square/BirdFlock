@@ -10,7 +10,7 @@ class GuiTools
     return float.TryParse(val, out res);
   }
 
-  public void GuiFloatParam( ref float value, string caption )
+  public void GuiFloatParam( ref float value, string caption, float maxValue )
   {
     float oldValue = value;
     string text;
@@ -34,7 +34,7 @@ class GuiTools
       GUILayout.BeginHorizontal();
         GUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
           GUILayout.FlexibleSpace();
-          value = GUILayout.HorizontalSlider(value, 0, 100, GUILayout.MinWidth(150) );
+          value = GUILayout.HorizontalSlider(value, 0, maxValue, GUILayout.MinWidth(150) );
           GUILayout.FlexibleSpace();
         GUILayout.EndVertical();
         text = GUILayout.TextField( text, textStyle, GUILayout.MinWidth(70) );

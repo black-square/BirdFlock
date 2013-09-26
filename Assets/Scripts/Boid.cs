@@ -4,20 +4,52 @@ using System;
 
 public class Boid : MonoBehaviour
 {
+  [Serializable]
+  public class Settings
+  {
+    public float SpeedMultipliyer = 3.0f;
+    public float ViewRadius = 0.5f;
+    public float OptDistance = 0.1f;
+    public float MinSpeed { get{ return 0.1f * SpeedMultipliyer; } }
+    public float InclineFactor { get{ return 300.0f / SpeedMultipliyer; } }
+    public float AligmentForcePart = 0.003f;
+    public float TotalForceMultipliyer = 12;
+  }
+
   const float epsilon = 1e-10f;
+  private Settings sts = null;
+  public Settings SettingsRef {
+    get { return sts; }
+    set { sts = value; }
+  }
 
-  const float speedMultipliyer = 3.0f;
-  const float viewRadius = 0.5f;
-  const float optDistance = 0.1f;
-  const float minSpeed = 0.1f * speedMultipliyer;
-  const float inclineFactor = 300.0f / speedMultipliyer;
-  const float aligmentForcePart = 0.003f;
-  const float totalForceultipliyer = 12;
+  private Vector3 velocity = Vector3.zero;
+  public Vector3 Velocity { get{ return velocity; } }
 
-  public Vector3 velocity = Vector3.zero;
+  void Start()
+  {
+    if( sts == null )
+    {
+      sts = Main.GetSettings( gameObject );
+
+      if( sts == null )
+      {
+        Debug.LogWarning( "Boid initialized with standalone settings copy" );
+        sts = new Settings();
+      }
+    }
+  }
 
   struct SeparationForce
   {
+    public SeparationForce( Settings sts )
+    {
+      //We have to compensate cohesion force which in OptDistance point
+      //equals OptDistance / 2
+      //solve( {optFactor / OptDistance = OptDistance / 2}, {optFactor} );
+      optFactor = sts.OptDistance * sts.OptDistance / 2;
+    }
+
     public bool Calc( Vector3 cur, Vector3 other, out Vector3 force )
     {
       var revDir = cur - other;
@@ -37,39 +69,36 @@ public class Boid : MonoBehaviour
     {
       return optFactor/ dist;
     }
-
-    //We have to compensate cohesion force which in optDistance point
-    //equals optDistance / 2
-    //solve( {optFactor / optDistance = optDistance / 2}, {optFactor} );
-    const float optFactor = optDistance * optDistance / 2;
+    
+    readonly float optFactor;
   };
 
   struct CollisionAvoidanceForce
   {
-    public CollisionAvoidanceForce( float sepForceAtOptDistance, bool useSquareFunction )
+    public CollisionAvoidanceForce( Settings sts, float sepForceAtOptDistance, bool useSquareFunction )
     {
       // Maple:
       // restart;
       // f := x-> factor2*(factor1/x^2 - 1);
-      // Mult := 2 * speedMultipliyer; #When collision occurs between birds each bird has a force vector and total force is twise bigger than between wall and bird. That's why we're  multiplying force
-      // F := { f(viewRadius) = 0, f(optDistance) = Mult * sepForceAtOptDistance }:
+      // Mult := 2 * SpeedMultipliyer; #When collision occurs between birds each bird has a force vector and total force is twise bigger than between wall and bird. That's why we're  multiplying force
+      // F := { f(ViewRadius) = 0, f(OptDistance) = Mult * sepForceAtOptDistance }:
       // Res := solve( F, {factor1, factor2} );
-      // RealConsts := {viewRadius = 0.5, optDistance = 0.1, sepForceAtOptDistance = 0.05, speedMultipliyer = 3};
-      // plot( eval(f(x), eval(Res, RealConsts) ), x = 0..eval(viewRadius, RealConsts) );
+      // RealConsts := {ViewRadius = 0.5, OptDistance = 0.1, sepForceAtOptDistance = 0.05, SpeedMultipliyer = 3};
+      // plot( eval(f(x), eval(Res, RealConsts) ), x = 0..eval(ViewRadius, RealConsts) );
       forceDlg = null;
 
       if( useSquareFunction )
       {
-        var viewRadius2 = viewRadius * viewRadius;
-        var optDistance2 = optDistance * optDistance;
-        factor1 = viewRadius2;
-        factor2 = -2 * speedMultipliyer * sepForceAtOptDistance * optDistance2 / ( optDistance2 - viewRadius2 );
+        var ViewRadius2 = sts.ViewRadius * sts.ViewRadius;
+        var OptDistance2 = sts.OptDistance * sts.OptDistance;
+        factor1 = ViewRadius2;
+        factor2 = -2 * sts.SpeedMultipliyer * sepForceAtOptDistance * OptDistance2 / ( OptDistance2 - ViewRadius2 );
         forceDlg = CalcImplSquared;
       }
       else
       {
-        factor1 = viewRadius;
-        factor2 = -2 * speedMultipliyer * sepForceAtOptDistance * optDistance / ( optDistance - viewRadius );
+        factor1 = sts.ViewRadius;
+        factor2 = -2 * sts.SpeedMultipliyer * sepForceAtOptDistance * sts.OptDistance / ( sts.OptDistance - sts.ViewRadius );
         forceDlg = CalcImplLinear;
       }
     }
@@ -113,15 +142,15 @@ public class Boid : MonoBehaviour
     // separation + collisionAvoidance
     // alignmentForce
 
-    SeparationForce sepForce;
-    CollisionAvoidanceForce collAvoid = new CollisionAvoidanceForce( sepForce.Calc(optDistance), false);
+    SeparationForce sepForce = new SeparationForce(sts);
+    CollisionAvoidanceForce collAvoid = new CollisionAvoidanceForce( sts, sepForce.Calc(sts.OptDistance), false);
 
     var centeroid = Vector3.zero;
     var collisionAvoidance = Vector3.zero;
     var avgSpeed = Vector3.zero;
     var neighbourCount = 0;
    
-    foreach( var cur in Physics.OverlapSphere(transform.position, viewRadius) )
+    foreach( var cur in Physics.OverlapSphere(transform.position, sts.ViewRadius) )
     {
       if( cur is SphereCollider )
       {
@@ -155,12 +184,16 @@ public class Boid : MonoBehaviour
     //Debug.DrawRay( transform.position, centeroid, Color.magenta );
     //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
 
-    var positionForce = (1.0f - aligmentForcePart) * speedMultipliyer * (centeroid + collisionAvoidance);
-    var alignmentForce = aligmentForcePart * avgSpeed / Time.deltaTime;
-    var totalForce = totalForceultipliyer * (positionForce + alignmentForce);
+    var positionForce = (1.0f - sts.AligmentForcePart) * sts.SpeedMultipliyer * (centeroid + collisionAvoidance);
+    var alignmentForce = sts.AligmentForcePart * avgSpeed / Time.deltaTime;
+    var totalForce = sts.TotalForceMultipliyer * (positionForce + alignmentForce);
 
-    velocity = CalcNewVelocity( velocity, totalForce * Time.deltaTime, transform.rotation * Vector3.forward );
-    gameObject.transform.rotation = CalcRotation( velocity, totalForce );
+    velocity = CalcNewVelocity( sts.MinSpeed, velocity, totalForce * Time.deltaTime, transform.rotation * Vector3.forward );
+
+    var rotation = CalcRotation( sts.InclineFactor, velocity, totalForce );
+
+    if( IsValid(rotation) )
+      gameObject.transform.rotation = rotation;
 
     Debug.DrawRay( transform.position, velocity, Color.grey );
     Debug.DrawRay( transform.position, positionForce, Color.cyan );
@@ -172,7 +205,7 @@ public class Boid : MonoBehaviour
     transform.position += velocity * Time.deltaTime;
   }
 
-  static Vector3 CalcNewVelocity( Vector3 curVel, Vector3 dsrVel, Vector3 defaultVelocity )
+  static Vector3 CalcNewVelocity( float minSpeed, Vector3 curVel, Vector3 dsrVel, Vector3 defaultVelocity )
   {
     var curVelLen = curVel.magnitude;
 
@@ -233,10 +266,20 @@ public class Boid : MonoBehaviour
     return proj.magnitude  * Mathf.Sign( Vector3.Dot(proj, vecNormal) );
   }
 
-  static Quaternion CalcRotation( Vector3 velocity, Vector3 totalForce )
+  static Quaternion CalcRotation( float inclineFactor, Vector3 velocity, Vector3 totalForce )
   {
+    if( velocity.sqrMagnitude < epsilon )
+      return new Quaternion( float.NaN, float.NaN, float.NaN, float.NaN );
+
     var rightVec = RightVectorXZProjected(velocity);
     var inclineDeg = VecProjectedLength( totalForce, rightVec ) * -inclineFactor;
     return Quaternion.LookRotation( velocity ) * Quaternion.AngleAxis(Mathf.Clamp(inclineDeg, -90, 90), Vector3.forward);
+  }
+
+  static bool IsValid ( Quaternion q )
+  {
+    #pragma warning disable 1718
+    return q == q; //Comparisons to NaN always return false, no matter what the value of the float is.
+    #pragma warning restore 1718
   }
 }
