@@ -111,12 +111,37 @@ public class Boid : MonoBehaviour
 
     public bool Calc( Vector3 cur, Collider cld, out Force force )
     {
-      var pointOnBounds = cld.ClosestPointOnBounds( cur );
+      var pointOnBounds = CalcPointOnBounds( cld, cur );
       var revDir = cur - pointOnBounds;
       var dist = revDir.magnitude;
       force.dir = revDir / dist * forceDlg(dist);
       force.pos = pointOnBounds;
       return true;
+    }
+
+    static Vector3 CalcPointOnBounds( Collider cld, Vector3 cur )
+    {
+      SphereCollider sphc = cld as SphereCollider;
+
+      if( !sphc )
+        return cld.ClosestPointOnBounds( cur );
+      else
+      {
+        //cld.ClosestPointOnBounds returns not precise values for spheres
+        //Fortunately they could be calculated easily
+        var realPos = sphc.transform.position + sphc.center;
+        var dir = cur - realPos;
+        var realScale = sphc.transform.lossyScale;
+        var realRadius = sphc.radius * Mathf.Max( realScale.x, realScale.y, realScale.z );
+        var dirLength = dir.magnitude;
+
+        //BoxCollider.ClosestPointOnBounds returns NaN if points are inside the volume
+        if( dirLength < realRadius )
+          return new Vector3( float.NaN, float.NaN, float.NaN );
+
+        var dirFraction = realRadius / dirLength;
+        return realPos + dirFraction * dir;
+      }
     }
 
     float CalcImplLinear( float dist )
@@ -137,6 +162,10 @@ public class Boid : MonoBehaviour
 
   void FixedUpdate()
   {
+    //Algorithm based on
+    //http://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/
+    //http://www.red3d.com/cwr/boids/
+
     //Bird is affected by 3 forses:
     // cohesion
     // separation + collisionAvoidance
@@ -152,7 +181,9 @@ public class Boid : MonoBehaviour
    
     foreach( var cur in Physics.OverlapSphere(transform.position, sts.ViewRadius) )
     {
-      if( cur is SphereCollider )
+      Boid boid = cur.GetComponent<Boid>();
+
+      if( boid ) //Birds processing
       {
         Vector3 separationForce;
 
@@ -162,9 +193,9 @@ public class Boid : MonoBehaviour
         collisionAvoidance += separationForce;
         ++neighbourCount;
         centeroid += cur.transform.position;
-        avgSpeed += cur.GetComponent<Boid>().velocity;
+        avgSpeed += boid.velocity;
       }
-      else if( cur is BoxCollider )
+      else //Obstacles processing
       {
         CollisionAvoidanceForce.Force force;
         if( collAvoid.Calc(transform.position, cur, out force) )
