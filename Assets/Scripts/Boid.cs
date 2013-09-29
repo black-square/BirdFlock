@@ -13,7 +13,7 @@ public class Boid : MonoBehaviour
     public float MinSpeed { get{ return 0.1f * SpeedMultipliyer; } }
     public float InclineFactor { get{ return 300.0f / SpeedMultipliyer; } }
     public float AligmentForcePart = 0.003f;
-    public float TotalForceMultipliyer = 12;
+    public float TotalForceMultipliyer = 3;
   }
 
   const float epsilon = 1e-10f;
@@ -256,13 +256,19 @@ public class Boid : MonoBehaviour
       dsrVel /= dsrVelLen;
 
       var angleFactor = ( 1 - Vector3.Dot(dsrVel, curVel) ) / 2; //smartplot((1-cos(x))/2);
-      var rotReqLength = angleFactor / (2 * curVelLen);
-      var rotationFactor = dsrVelLen * rotReqLength;
+      var rotReqLength =  2 * curVelLen * angleFactor;
+      var speedRest = dsrVelLen - rotReqLength;
 
-      if( rotationFactor > 1 )
-        resultLen = (rotationFactor - 1.0f) / rotReqLength;
-
-      curVel = Vector3.Slerp( curVel, dsrVel, rotationFactor );
+      if( speedRest > 0 )
+      {
+        curVel = dsrVel;
+        resultLen = speedRest;
+      }
+      else
+      {
+        var rotationFactor = (rotReqLength + speedRest) / rotReqLength;
+        curVel = Vector3.Slerp( curVel, dsrVel, rotationFactor );
+      }
 
       if( resultLen < minSpeed )
         resultLen = minSpeed;

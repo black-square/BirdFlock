@@ -6,7 +6,7 @@ public class Main : MonoBehaviour
   public Transform cameraObject;
   static Boid.Settings settings = new Boid.Settings();
 
-  void Start()
+  void Start_()
   {
     int count = 10;
     float size = 0.1f;
