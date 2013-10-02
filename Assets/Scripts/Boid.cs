@@ -13,7 +13,8 @@ public class Boid : MonoBehaviour
     public float MinSpeed { get{ return 0.1f * SpeedMultipliyer; } }
     public float InclineFactor { get{ return 300.0f / SpeedMultipliyer; } }
     public float AligmentForcePart = 0.003f;
-    public float TotalForceMultipliyer = 3;
+    public float TotalForceMultipliyer = 12;
+    public float Inertness = 0.5f;
   }
 
   const float epsilon = 1e-10f;
@@ -219,7 +220,9 @@ public class Boid : MonoBehaviour
     var alignmentForce = sts.AligmentForcePart * avgSpeed / Time.deltaTime;
     var totalForce = sts.TotalForceMultipliyer * (positionForce + alignmentForce);
 
-    velocity = CalcNewVelocity( sts.MinSpeed, velocity, totalForce * Time.deltaTime, transform.rotation * Vector3.forward );
+    var newVelocity = (1 - sts.Inertness) * (totalForce * Time.deltaTime) + sts.Inertness * velocity;
+
+    velocity = CalcNewVelocity( sts.MinSpeed, velocity, newVelocity, transform.rotation * Vector3.forward );
 
     var rotation = CalcRotation( sts.InclineFactor, velocity, totalForce );
 

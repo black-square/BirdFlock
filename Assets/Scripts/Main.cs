@@ -43,11 +43,18 @@ public class Main : MonoBehaviour
 
   void SettingsWindow( int windowId )
   {
-    guiTools.GuiFloatParam( ref settings.SpeedMultipliyer, "Speed", 20 );
-    guiTools.GuiFloatParam( ref settings.ViewRadius, "View distance", 20 );
-    guiTools.GuiFloatParam( ref settings.OptDistance, "Optimal distance between birds", 2 );
-    guiTools.GuiFloatParam( ref settings.AligmentForcePart, "Fraction of flock aligment force", 0.3f );
-    guiTools.GuiFloatParam( ref settings.TotalForceMultipliyer, "Reaction speed", 50 );
+    GUILayout.BeginHorizontal();
+      GUILayout.BeginVertical();
+        guiTools.GuiFloatParam( ref settings.SpeedMultipliyer, "Speed", 20 );
+        guiTools.GuiFloatParam( ref settings.ViewRadius, "View distance", 20 );
+        guiTools.GuiFloatParam( ref settings.OptDistance, "Optimal distance between birds", 2 );
+      GUILayout.EndVertical();
+      GUILayout.BeginVertical();
+        guiTools.GuiFloatParam( ref settings.AligmentForcePart, "Fraction of flock aligment force", 0.3f );
+        guiTools.GuiFloatParam( ref settings.TotalForceMultipliyer, "Reaction speed", 50 );
+        guiTools.GuiFloatParam( ref settings.Inertness, "Inertness", 1 );
+      GUILayout.EndVertical();
+    GUILayout.EndHorizontal();
   }
 
   delegate void SimpleDlg();
