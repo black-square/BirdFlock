@@ -76,5 +76,7 @@ public class Main : MonoBehaviour
 
     if( showSettingsWindow )
       GUILayout.Window(0, new Rect(10, 30, 2, 2), SettingsWindow, "Test");
+
+    GUI.Label(new Rect(200, 0, 300, 50), Boid.ToS(cameraObject.GetComponent<Boid>().Velocity) );
   }
 }

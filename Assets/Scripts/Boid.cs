@@ -110,12 +110,16 @@ public class Boid : MonoBehaviour
       public Vector3 pos;
     };
 
-    public bool Calc( Vector3 cur, Collider cld, out Force force )
+    public bool Calc( Vector3 cur, Vector3 birdDir, Collider cld, out Force force )
     {
       var pointOnBounds = CalcPointOnBounds( cld, cur );
       var revDir = cur - pointOnBounds;
       var dist = revDir.magnitude;
-      force.dir = revDir / dist * forceDlg(dist);
+
+      revDir /= dist;
+
+      //Force depends on direction of bird: no need to turn a bird if it is flying in opposite direction
+      force.dir = revDir * ( forceDlg(dist) * AngleToFactor(revDir, birdDir) );
       force.pos = pointOnBounds;
       return true;
     }
@@ -179,6 +183,7 @@ public class Boid : MonoBehaviour
     var collisionAvoidance = Vector3.zero;
     var avgSpeed = Vector3.zero;
     var neighbourCount = 0;
+    var direction = transform.rotation * Vector3.forward;
    
     foreach( var cur in Physics.OverlapSphere(transform.position, sts.ViewRadius) )
     {
@@ -199,7 +204,7 @@ public class Boid : MonoBehaviour
       else //Obstacles processing
       {
         CollisionAvoidanceForce.Force force;
-        if( collAvoid.Calc(transform.position, cur, out force) )
+        if( collAvoid.Calc(transform.position, direction, cur, out force) )
         {
           collisionAvoidance += force.dir;
           Debug.DrawRay( force.pos, force.dir, Color.red );
@@ -222,7 +227,7 @@ public class Boid : MonoBehaviour
 
     var newVelocity = (1 - sts.Inertness) * (totalForce * Time.deltaTime) + sts.Inertness * velocity;
 
-    velocity = CalcNewVelocity( sts.MinSpeed, velocity, newVelocity, transform.rotation * Vector3.forward );
+    velocity = CalcNewVelocity( sts.MinSpeed, velocity, newVelocity, direction );
 
     var rotation = CalcRotation( sts.InclineFactor, velocity, totalForce );
 
@@ -258,7 +263,7 @@ public class Boid : MonoBehaviour
     {
       dsrVel /= dsrVelLen;
 
-      var angleFactor = ( 1 - Vector3.Dot(dsrVel, curVel) ) / 2; //smartplot((1-cos(x))/2);
+      var angleFactor = AngleToFactor(dsrVel, curVel);
       var rotReqLength =  2 * curVelLen * angleFactor;
       var speedRest = dsrVelLen - rotReqLength;
 
@@ -280,7 +285,7 @@ public class Boid : MonoBehaviour
     return curVel * resultLen;
   }
 
-  static string ToS( Vector3 vec )
+  public static string ToS( Vector3 vec )
   {
     return String.Format("{0:0.00000}:[{1:0.00000}, {2:0.00000}, {3:0.00000}]", vec.magnitude, vec.x, vec.y, vec.z );
   }
@@ -321,5 +326,13 @@ public class Boid : MonoBehaviour
     #pragma warning disable 1718
     return q == q; //Comparisons to NaN always return false, no matter what the value of the float is.
     #pragma warning restore 1718
+  }
+
+  //Map interval of angles between vectors [0..Pi] to interval [0..1]
+  //Vectors a and b must be normalized
+  static float AngleToFactor( Vector3 a, Vector3 b )
+  {
+    //plot((1-cos(x))/2, x = 0..Pi);
+    return ( 1 - Vector3.Dot(a, b) ) / 2;
   }
 }
