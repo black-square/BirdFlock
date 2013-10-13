@@ -17,7 +17,7 @@ public class Boid : MonoBehaviour
     public float Inertness = 0.5f;
   }
 
-  const float epsilon = 1e-10f;
+  const float epsilon = MathTools.epsilon;
   private Settings sts = null;
   public Settings SettingsRef {
     get { return sts; }
