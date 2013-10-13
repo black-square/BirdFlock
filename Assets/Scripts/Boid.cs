@@ -15,6 +15,7 @@ public class Boid : MonoBehaviour
     public float AligmentForcePart = 0.003f;
     public float TotalForceMultipliyer = 12;
     public float Inertness = 0.5f;
+    public float VerticalPriority = 1.0f;
   }
 
   const float epsilon = MathTools.epsilon;
@@ -182,6 +183,7 @@ public class Boid : MonoBehaviour
     var centeroid = Vector3.zero;
     var collisionAvoidance = Vector3.zero;
     var avgSpeed = Vector3.zero;
+    var upDir = Vector3.zero;
     var neighbourCount = 0;
     var direction = transform.rotation * Vector3.forward;
    
@@ -200,6 +202,7 @@ public class Boid : MonoBehaviour
         ++neighbourCount;
         centeroid += cur.transform.position;
         avgSpeed += boid.velocity;
+        upDir += cur.transform.rotation * Vector3.up;
       }
       else //Obstacles processing
       {
@@ -220,6 +223,9 @@ public class Boid : MonoBehaviour
 
     //Debug.DrawRay( transform.position, centeroid, Color.magenta );
     //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
+    //Debug.DrawRay( transform.position, upDir, Color.red );
+
+    centeroid = MathTools.StretchAlongAxis( centeroid, upDir, sts.VerticalPriority );
 
     var positionForce = (1.0f - sts.AligmentForcePart) * sts.SpeedMultipliyer * (centeroid + collisionAvoidance);
     var alignmentForce = sts.AligmentForcePart * avgSpeed / Time.deltaTime;

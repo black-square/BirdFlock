@@ -5,14 +5,14 @@ public class Main : MonoBehaviour
   public Object prefab;
   public Transform cameraObject;
   static Boid.Settings settings = new Boid.Settings();
+  public Transform tmpObject;
 
-  void Start_()
+  void Start()
   {
     int count = 10;
     float size = 0.1f;
     int lbrd = -count / 2;
     int rbrd = lbrd + count;
-
 
     for( int i = lbrd; i < rbrd; ++i )
       for( int j = lbrd; j < rbrd; ++j )
@@ -36,7 +36,16 @@ public class Main : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
- 
+    var strechAxis = cameraObject.GetComponent<Boid>().Velocity.normalized;
+    //var strechAxis = Vector3.up;
+
+    MathTools.DrawTestCube( tmpObject.position, delegate( Vector3 pos )
+    {
+      pos = pos.normalized * 0.7f;
+      return MathTools.StretchAlongAxis( pos, strechAxis, settings.VerticalPriority );
+    });
+
+    Debug.DrawRay( tmpObject.position, strechAxis * 5, Color.yellow );
   }
 
   private GuiTools guiTools = new GuiTools();
@@ -50,9 +59,10 @@ public class Main : MonoBehaviour
         guiTools.GuiFloatParam( ref settings.OptDistance, "Optimal distance between birds", 2 );
       GUILayout.EndVertical();
       GUILayout.BeginVertical();
-        guiTools.GuiFloatParam( ref settings.AligmentForcePart, "Fraction of flock aligment force", 0.3f );
+        guiTools.GuiFloatParam( ref settings.AligmentForcePart, "Fraction of flock aligment force", 0.2f );
         guiTools.GuiFloatParam( ref settings.TotalForceMultipliyer, "Reaction speed", 50 );
         guiTools.GuiFloatParam( ref settings.Inertness, "Inertness", 1 );
+        guiTools.GuiFloatParam( ref settings.VerticalPriority, "VerticalPriority", 5 );
       GUILayout.EndVertical();
     GUILayout.EndHorizontal();
   }
