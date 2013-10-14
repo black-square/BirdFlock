@@ -33,7 +33,9 @@ public class Boid : MonoBehaviour
     {
       sts = Main.GetSettings( gameObject );
 
-      if( sts == null )
+      if( sts != null )
+        Debug.LogWarning( "Boid initialized with default settings" );
+      else
       {
         Debug.LogWarning( "Boid initialized with standalone settings copy" );
         sts = new Settings();
