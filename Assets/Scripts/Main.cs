@@ -22,6 +22,8 @@ public class Main : MonoBehaviour
       settings
     ).transform;
 
+    GetComponent<CameraControl>().target = cameraObj;
+
     for( int i = lbrd; i < rbrd; ++i )
       for( int j = lbrd; j < rbrd; ++j )
       {

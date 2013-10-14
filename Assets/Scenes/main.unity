@@ -1616,7 +1616,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: .100000001
+  near clip plane: .0500000007
   far clip plane: 100
   field of view: 60
   orthographic: 0
@@ -1634,8 +1634,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2084867496}
-  m_LocalRotation: {x: .0859033316, y: -.153680742, z: -.00374411163, w: .984372318}
-  m_LocalPosition: {x: -.0865722895, y: -.0826994181, z: -1.38807702}
+  m_LocalRotation: {x: 0, y: -.0513948351, z: 0, w: .998678446}
+  m_LocalPosition: {x: -.197082996, y: -.0826994181, z: -.425267458}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1141265288}
@@ -1648,15 +1648,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 2084867496}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51ce9392de7594843b7d06cdfcf69b93, type: 3}
+  m_Script: {fileID: 11500000, guid: 99a32bd7242014b4cadb3240dc6400f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 2103950088}
-  xSpeed: 250
-  ySpeed: 120
-  zSpeed: 100
-  yMinLimit: -90
-  yMaxLimit: 90
+  target: {fileID: 0}
+  speed: {x: -2.4000001, y: 5, z: 2}
+  rotation: {x: 0, y: 0, z: 0}
+  keyFactor: .00100000005
+  distance: 2
+  minDistance: .200000003
+  xMinLimit: -90
+  xMaxLimit: 90
+  rotateWithTarget: 0
 --- !u!114 &2084867503
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1672,8 +1675,8 @@ MonoBehaviour:
   instancePoints:
   - {fileID: 2103950088}
   - {fileID: 27292800}
-  auxBirdsCount: 0
-  instancePointNum: 1
+  auxBirdsCount: 10
+  instancePointNum: 0
 --- !u!1 &2103950084
 GameObject:
   m_ObjectHideFlags: 0
