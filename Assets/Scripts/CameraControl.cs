@@ -27,8 +27,30 @@ public class CameraControl : MonoBehaviour
       rigidbody.freezeRotation = true;
   }
 
+  void CheckForNewTarget()
+  {
+    if( Input.GetMouseButtonDown(0) )
+    {
+      var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+      RaycastHit[] hits = Physics.RaycastAll( ray, Camera.main.farClipPlane );
+  
+      foreach( var hit in hits )
+      {
+        Boid boid = hit.collider.GetComponent<Boid>();
+  
+        if( boid )
+        {
+          target = hit.collider.gameObject.transform;
+          break;
+        }
+      }
+    }
+  }
+
   void LateUpdate()
   {
+   CheckForNewTarget ();
+
     if (!target)
       return;
 

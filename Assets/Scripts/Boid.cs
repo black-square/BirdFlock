@@ -12,7 +12,7 @@ public class Boid : MonoBehaviour
     public float OptDistance = 0.1f;
     public float MinSpeed { get{ return 0.1f * SpeedMultipliyer; } }
     public float InclineFactor { get{ return 300.0f / SpeedMultipliyer; } }
-    public float AligmentForcePart = 0.003f;
+    public float AligmentForcePart = 0.002f;
     public float TotalForceMultipliyer = 12;
     public float Inertness = 0.5f;
   }

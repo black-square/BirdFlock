@@ -64,7 +64,7 @@ public class Main : MonoBehaviour
         guiTools.GuiFloatParam( ref settings.OptDistance, "Optimal distance between birds", 2 );
       GUILayout.EndVertical();
       GUILayout.BeginVertical();
-        guiTools.GuiFloatParam( ref settings.AligmentForcePart, "Fraction of flock aligment force", 0.2f );
+        guiTools.GuiFloatParam( ref settings.AligmentForcePart, "Fraction of flock aligment force", 0.01f );
         guiTools.GuiFloatParam( ref settings.TotalForceMultipliyer, "Reaction speed", 50 );
         guiTools.GuiFloatParam( ref settings.Inertness, "Inertness", 1 );
       GUILayout.EndVertical();
