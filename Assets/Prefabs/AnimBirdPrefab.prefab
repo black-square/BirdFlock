@@ -8,7 +8,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400000}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23,7 +23,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400002}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400006}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400008}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -68,7 +68,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400010}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,7 +83,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400014}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400016}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400020}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400022}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,7 +144,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400018}
   - 137: {fileID: 13700000}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400004}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - 95: {fileID: 9500000}
   - 114: {fileID: 11400000}
   - 135: {fileID: 13500000}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AnimBirdPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,7 +337,7 @@ Animator:
   m_Avatar: {fileID: 9000000, guid: 217b44ebbeec2f54ba819cc4848ca39e, type: 3}
   m_Controller: {fileID: 9100000, guid: ebac3927c002f8d418d7b73b7c92b643, type: 2}
   m_CullingMode: 1
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_AnimatePhysics: 0
 --- !u!114 &11400000
 MonoBehaviour:
@@ -350,7 +350,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73453c89593cf1d4ea4413a8cb9df4b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: 0, y: 0, z: 0}
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1

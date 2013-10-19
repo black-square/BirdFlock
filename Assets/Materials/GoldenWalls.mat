@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: SemiTransparent
-  m_Shader: {fileID: 30, guid: 0000000000000000f000000000000000, type: 0}
+  m_Name: GoldenWalls
+  m_Shader: {fileID: 4, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: []
   m_SavedProperties:
     serializedVersion: 2
@@ -16,14 +16,14 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: 732027d7648f7c44bb3131fce42a2085, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _BumpMap
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: 3d7dec8b58b3b2c499c8b93235072204, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -37,7 +37,7 @@ Material:
         first:
           name: _ParallaxMap
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: dfae827fde6973d4786693fb935c373e, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -47,18 +47,18 @@ Material:
         second: .5
       data:
         first:
-          name: _Shininess
-        second: .078125
-      data:
-        first:
           name: _Parallax
         second: .0199999996
+      data:
+        first:
+          name: _Shininess
+        second: .216970652
     m_Colors:
       data:
         first:
           name: _Color
-        second: {r: .823529422, g: .85760653, b: 1, a: .152941182}
+        second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
           name: _SpecColor
-        second: {r: .5, g: .5, b: .5, a: 1}
+        second: {r: 1, g: 1, b: 1, a: 1}
