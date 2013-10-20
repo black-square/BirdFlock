@@ -20,7 +20,7 @@ public class Trace: MonoBehaviour
       curWP = wayPoints[0];
   }
 
-  static public Trace FindDefault()
+  static Trace FindDefault()
   {
     return (Trace)UnityEngine.Object.FindObjectOfType( typeof(Trace) );
   }
@@ -45,9 +45,9 @@ public class Trace: MonoBehaviour
     FindDefault().wayPoints = list.ToArray();
   }
 
-  public WayPoint GetPoint( Boid.Settings sts )
+  public Vector3 GetAtractionPoint( Boid.Settings sts )
   {
-    return curWP;
+    return curWP.transform.position;
   }
 }
 

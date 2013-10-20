@@ -86,6 +86,7 @@ GameObject:
   - 4: {fileID: 27292800}
   - 33: {fileID: 27292799}
   - 23: {fileID: 27292798}
+  - 114: {fileID: 27292801}
   m_Layer: 8
   m_Name: instancePointSlalom
   m_TagString: Untagged
@@ -131,6 +132,24 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 538236901}
+--- !u!114 &27292801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 27292797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621c82f84c0014f4b895dde1934c63d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wayPoints:
+  - {fileID: 107317996}
+  - {fileID: 1838622881}
+  - {fileID: 1182985378}
+  - {fileID: 1170590625}
+  - {fileID: 581714296}
+  - {fileID: 1076126761}
 --- !u!1 &107317991
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,7 +1004,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 538236901}
-  - 114: {fileID: 538236902}
   m_Layer: 0
   m_Name: Slalom
   m_TagString: Untagged
@@ -1004,31 +1022,13 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 27292800}
-  - {fileID: 1838622877}
-  - {fileID: 581714292}
-  - {fileID: 1182985374}
   - {fileID: 107317992}
+  - {fileID: 1838622877}
+  - {fileID: 1182985374}
   - {fileID: 1170590621}
+  - {fileID: 581714292}
   - {fileID: 1076126757}
   m_Father: {fileID: 0}
---- !u!114 &538236902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 538236900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e00be0cfbd1fba4a844c2eae6f16e14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wayPoints:
-  - {fileID: 107317996}
-  - {fileID: 1838622881}
-  - {fileID: 1182985378}
-  - {fileID: 1170590625}
-  - {fileID: 581714296}
-  - {fileID: 1076126761}
 --- !u!1 &581714291
 GameObject:
   m_ObjectHideFlags: 0
@@ -3244,7 +3244,7 @@ MonoBehaviour:
   instancePoints:
   - {fileID: 2103950088}
   - {fileID: 27292800}
-  auxBirdsCount: 10
+  auxBirdsCount: 4
   instancePointNum: 1
 --- !u!1 &2103950084
 GameObject:

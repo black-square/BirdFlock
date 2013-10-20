@@ -15,7 +15,9 @@ public class Boid : MonoBehaviour
     public float AligmentForcePart = 0.002f;
     public float TotalForceMultipliyer = 12;
     public float Inertness = 0.5f;
-    public Trace trace = null;
+
+    public Trace Trace { get; set; }
+    public float AttractrionForce = 0.05f;
   }
 
   private Settings sts = null;
@@ -65,9 +67,9 @@ public class Boid : MonoBehaviour
    
     foreach( var cur in Physics.OverlapSphere(transform.position, sts.ViewRadius) )
     {
-      Boid boid = cur.GetComponent<Boid>();
+      Boid boid;
 
-      if( boid ) //Birds processing
+      if( (boid = cur.GetComponent<Boid>()) != null ) //Birds processing
       {
         Vector3 separationForce;
 
@@ -78,6 +80,10 @@ public class Boid : MonoBehaviour
         ++neighbourCount;
         centeroid += cur.transform.position;
         avgSpeed += boid.velocity;
+      }
+      else if( cur.GetComponent<WayPoint>() )
+      {
+        //Just ignore WayPoints objects to skip collision avoidness
       }
       else //Obstacles processing
       {
@@ -101,7 +107,7 @@ public class Boid : MonoBehaviour
 
     var positionForce = (1.0f - sts.AligmentForcePart) * sts.SpeedMultipliyer * (centeroid + collisionAvoidance);
     var alignmentForce = sts.AligmentForcePart * avgSpeed / Time.deltaTime;
-    var totalForce = sts.TotalForceMultipliyer * (positionForce + alignmentForce);
+    var totalForce = sts.TotalForceMultipliyer * ( positionForce + alignmentForce + CalculateAttractionForce() );
 
     var newVelocity = (1 - sts.Inertness) * (totalForce * Time.deltaTime) + sts.Inertness * velocity;
 
@@ -120,6 +126,17 @@ public class Boid : MonoBehaviour
   void Update()
   {
     transform.position += velocity * Time.deltaTime;
+  }
+
+  Vector3 CalculateAttractionForce()
+  {
+    if( !sts.Trace )
+      return Vector3.zero;
+
+    var pos = sts.Trace.GetAtractionPoint(sts);
+    var direction = (pos - transform.position).normalized;
+
+    return sts.AttractrionForce * sts.SpeedMultipliyer * MathTools.AngleToFactor( direction, velocity ) * direction;
   }
 
   static Vector3 CalcNewVelocity( float minSpeed, Vector3 curVel, Vector3 dsrVel, Vector3 defaultVelocity )

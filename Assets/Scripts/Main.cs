@@ -12,7 +12,7 @@ public class Main : MonoBehaviour
 
   void Start()
   {
-    settings.trace = Trace.FindDefault();
+    settings.Trace = instancePoints[instancePointNum].GetComponent<Trace>();
 
     float size = 0.1f;
     int lbrd = -auxBirdsCount / 2;
@@ -69,6 +69,7 @@ public class Main : MonoBehaviour
         guiTools.GuiFloatParam( ref settings.AligmentForcePart, "Fraction of flock aligment force", 0.01f );
         guiTools.GuiFloatParam( ref settings.TotalForceMultipliyer, "Reaction speed", 50 );
         guiTools.GuiFloatParam( ref settings.Inertness, "Inertness", 1 );
+        guiTools.GuiFloatParam( ref settings.AttractrionForce, "Waypoint attraction force", 0.1f );
       GUILayout.EndVertical();
     GUILayout.EndHorizontal();
   }
