@@ -12,6 +12,8 @@ public class Main : MonoBehaviour
 
   void Start()
   {
+    settings.trace = Trace.FindDefault();
+
     float size = 0.1f;
     int lbrd = -auxBirdsCount / 2;
     int rbrd = lbrd + auxBirdsCount;
@@ -91,6 +93,6 @@ public class Main : MonoBehaviour
     if( showSettingsWindow )
       GUILayout.Window(0, new Rect(10, 30, 2, 2), SettingsWindow, "Test");
 
-    GUI.Label(new Rect(200, 0, 300, 50), MathTools.ToS(cameraObj.GetComponent<Boid>().Velocity) );
+    //GUI.Label(new Rect(200, 0, 300, 50), MathTools.ToS(cameraObj.GetComponent<Boid>().Velocity) );
   }
 }

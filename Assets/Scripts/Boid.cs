@@ -15,6 +15,7 @@ public class Boid : MonoBehaviour
     public float AligmentForcePart = 0.002f;
     public float TotalForceMultipliyer = 12;
     public float Inertness = 0.5f;
+    public Trace trace = null;
   }
 
   private Settings sts = null;

@@ -6,7 +6,7 @@ public class CameraControl : MonoBehaviour
   public Transform target;
   public Vector3 speed = new Vector3( -2.4f, 5.0f, 2.0f );
   public Vector3 rotation;
-  public float keyFactor = 0.001f;
+  public float keyFactor = 0.005f;
 
   public float distance = 2.0f;
   public float minDistance = 0.2f;
