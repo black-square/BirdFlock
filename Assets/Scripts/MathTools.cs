@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public static class MathTools
 {
@@ -68,4 +69,73 @@ public static class MathTools
     return Mathf.Clamp (angle, min, max);
   }
 
+  //Returns the closiest point to cur position on bounds of cld
+  public static Vector3 CalcPointOnBounds( Collider cld, Vector3 cur )
+  {
+    SphereCollider sphc = cld as SphereCollider;
+
+    if( !sphc )
+      return cld.ClosestPointOnBounds( cur );
+    else
+    {
+      //cld.ClosestPointOnBounds returns not precise values for spheres
+      //Fortunately they could be calculated easily
+      var realPos = sphc.transform.position + sphc.center;
+      var dir = cur - realPos;
+      var realScale = sphc.transform.lossyScale;
+      var realRadius = sphc.radius * Mathf.Max( realScale.x, realScale.y, realScale.z );
+      var dirLength = dir.magnitude;
+
+      //BoxCollider.ClosestPointOnBounds returns NaN if points are inside the volume
+      if( dirLength < realRadius )
+        return new Vector3( float.NaN, float.NaN, float.NaN );
+
+      var dirFraction = realRadius / dirLength;
+      return realPos + dirFraction * dir;
+    }
+  }
+
+  public static string ToS( Vector3 vec )
+  {
+    return String.Format("{0:0.00000}:[{1:0.00000}, {2:0.00000}, {3:0.00000}]", vec.magnitude, vec.x, vec.y, vec.z );
+  }
+
+    //Projects vectors on plane XZ and calculate angle between them
+  public static float AngleXZProjected( Vector3 vec1, Vector3 vec2 )
+  {
+    vec1.y = 0;
+    vec2.y = 0;
+
+    return Vector3.Angle( vec1, vec2 );
+  }
+
+  //Projects vectors on plane XZ and turn it right on 90deg
+  public static Vector3 RightVectorXZProjected( Vector3 vec )
+  {
+    vec.y = 0;
+    return Quaternion.AngleAxis(90, Vector3.up) * vec;
+  }
+
+  //Returns magnitude of vector vec projected on vecNormal
+  public static float VecProjectedLength( Vector3 vec, Vector3 vecNormal )
+  {
+    var proj = Vector3.Project( vec, vecNormal );
+    return proj.magnitude * Mathf.Sign( Vector3.Dot(proj, vecNormal) );
+  }
+
+  //Check that Quaternion is not NaN
+  public static bool IsValid ( Quaternion q )
+  {
+    #pragma warning disable 1718
+    return q == q; //Comparisons to NaN always return false, no matter what the value of the float is.
+    #pragma warning restore 1718
+  }
+
+  //Map interval of angles between vectors [0..Pi] to interval [0..1]
+  //Vectors a and b must be normalized
+  public static float AngleToFactor( Vector3 a, Vector3 b )
+  {
+    //plot((1-cos(x))/2, x = 0..Pi);
+    return ( 1 - Vector3.Dot(a, b) ) / 2;
+  }
 }

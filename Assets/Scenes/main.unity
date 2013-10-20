@@ -34,7 +34,7 @@ LightmapSettings:
   m_ObjectHideFlags: 0
   m_LightProbes: {fileID: 0}
   m_Lightmaps:
-  - m_Lightmap: {fileID: 2800000, guid: 5d3be719b2fd1ed4fbe841d9660aba02, type: 3}
+  - m_Lightmap: {fileID: 2800000, guid: 943a2b4764c9313418104df02e835b51, type: 3}
     m_IndirectLightmap: {fileID: 0}
   m_LightmapsMode: 0
   m_BakedColorSpace: 0
