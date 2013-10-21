@@ -17,7 +17,11 @@ public class Main : MonoBehaviour
   void Start()
   {
     LoadSettings();
+    InstantiateBirds();
+  }
 
+  void InstantiateBirds()
+  {
     var ip = instancePoints[instancePointNum];
     var sts = settings[instancePointNum];
 
@@ -100,7 +104,8 @@ public class Main : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
- 
+    if( Input.GetKeyDown("space") )
+      OnSettingsClick();
   }
 
   private GuiTools guiTools = new GuiTools();
@@ -120,7 +125,7 @@ public class Main : MonoBehaviour
         guiTools.GuiFloatParam( ref sts.TotalForceMultipliyer, "Reaction speed", 50 );
         guiTools.GuiFloatParam( ref sts.Inertness, "Inertness", 1 );
         guiTools.GuiFloatParam( ref sts.VerticalPriority, "Flock's shape deformation", 3 );
-        guiTools.GuiFloatParam( ref sts.AttractrionForce, "Waypoint attraction force", 0.1f );
+        guiTools.GuiFloatParam( ref sts.AttractrionForce, "Waypoint attraction force", 1.0f );
       GUILayout.EndVertical();
     GUILayout.EndHorizontal();
   }
@@ -129,12 +134,22 @@ public class Main : MonoBehaviour
 
   private bool showSettingsWindow = false;
 
+  void OnSettingsClick()
+  {
+    showSettingsWindow = !showSettingsWindow;
+
+    if(!showSettingsWindow)
+      SaveSettings();
+
+    CameraControl.GlobalSettings.isDisabled = showSettingsWindow;
+  }
+
   void OnGUI()
   {
     var tlbLabels = new string[] { "Restart", "Settings" };
     var tlbActions = new SimpleDlg[] {
-      () => { Application.LoadLevel(Application.loadedLevelName); SaveSettings(); },
-      () => { showSettingsWindow = !showSettingsWindow; if(!showSettingsWindow) SaveSettings(); }
+      () => Application.LoadLevel(Application.loadedLevelName),
+      OnSettingsClick
     };
 
     var tlbResult = GUILayout.Toolbar( -1, tlbLabels );
