@@ -16,6 +16,7 @@ public class Boid : MonoBehaviour
     public float TotalForceMultipliyer = 12;
     public float Inertness = 0.5f;
 
+    [System.Xml.Serialization.XmlIgnore]
     public Trace Trace { get; set; }
     public float AttractrionForce = 0.05f;
   }

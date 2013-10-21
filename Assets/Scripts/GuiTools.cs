@@ -32,10 +32,8 @@ class GuiTools
     GUILayout.BeginVertical("box");
       GUILayout.Label(caption);
       GUILayout.BeginHorizontal();
-        GUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
-          GUILayout.FlexibleSpace();
+        GUILayout.BeginVertical("box");
           value = GUILayout.HorizontalSlider(value, 0, maxValue, GUILayout.MinWidth(150) );
-          GUILayout.FlexibleSpace();
         GUILayout.EndVertical();
         text = GUILayout.TextField( text, textStyle, GUILayout.MinWidth(70) );
       GUILayout.EndHorizontal();
