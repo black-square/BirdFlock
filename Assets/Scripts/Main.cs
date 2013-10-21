@@ -18,6 +18,7 @@ public class Main : MonoBehaviour
   {
     LoadSettings();
     InstantiateBirds();
+    CameraControl.GlobalSettings.isDisabled = false;
   }
 
   void InstantiateBirds()
@@ -144,13 +145,16 @@ public class Main : MonoBehaviour
     CameraControl.GlobalSettings.isDisabled = showSettingsWindow;
   }
 
+  void Restart()
+  {
+    SaveSettings();
+    Application.LoadLevel(Application.loadedLevelName);
+  }
+
   void OnGUI()
   {
     var tlbLabels = new string[] { "Restart", "Settings" };
-    var tlbActions = new SimpleDlg[] {
-      () => Application.LoadLevel(Application.loadedLevelName),
-      OnSettingsClick
-    };
+    var tlbActions = new SimpleDlg[] { Restart, OnSettingsClick };
 
     var tlbResult = GUILayout.Toolbar( -1, tlbLabels );
 
