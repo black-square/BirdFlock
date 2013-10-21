@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<ArrayOfSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Settings>
+    <SpeedMultipliyer>3</SpeedMultipliyer>
+    <ViewRadius>0.5</ViewRadius>
+    <OptDistance>0.1</OptDistance>
+    <AligmentForcePart>0.002</AligmentForcePart>
+    <TotalForceMultipliyer>12</TotalForceMultipliyer>
+    <Inertness>0.5</Inertness>
+    <AttractrionForce>0</AttractrionForce>
+  </Settings>
+  <Settings>
+    <SpeedMultipliyer>5.318841</SpeedMultipliyer>
+    <ViewRadius>0.5</ViewRadius>
+    <OptDistance>0.1724638</OptDistance>
+    <AligmentForcePart>0.0001</AligmentForcePart>
+    <TotalForceMultipliyer>6.927539</TotalForceMultipliyer>
+    <Inertness>0.5</Inertness>
+    <AttractrionForce>0.04130435</AttractrionForce>
+  </Settings>
+</ArrayOfSettings>

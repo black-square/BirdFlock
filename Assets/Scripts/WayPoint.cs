@@ -4,13 +4,11 @@ using UnityEngine;
 public class WayPoint: MonoBehaviour
 {
   public int editorPriority = 0;
+  public Trace trace;
 
-  public WayPoint( Trace collection )
+  void OnTriggerEnter(Collider other)
   {
-    this.collection = collection;
+    trace.NextWayPoint();
   }
-
-
-  private Trace collection;
 }
 

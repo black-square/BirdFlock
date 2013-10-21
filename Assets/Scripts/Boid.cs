@@ -18,7 +18,7 @@ public class Boid : MonoBehaviour
 
     [System.Xml.Serialization.XmlIgnore]
     public Trace Trace { get; set; }
-    public float AttractrionForce = 0.05f;
+    public float AttractrionForce = 0.02f;
   }
 
   private Settings sts = null;

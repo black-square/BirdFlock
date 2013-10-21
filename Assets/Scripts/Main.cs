@@ -41,15 +41,25 @@ public class Main : MonoBehaviour
       }
   }
 
+  private readonly XmlSerializer serializer = new XmlSerializer(typeof(List<Boid.Settings>));
+  private string SettingsFileName { get{ return Application.dataPath + Path.DirectorySeparatorChar +  "Settings.xml";} }
+
   void LoadSettings()
   {
-    var xml = PlayerPrefs.GetString( "Settings" );
-
-    if( !string.IsNullOrEmpty(xml) )
+    if( Application.isEditor )
     {
-      var str = new StringReader(xml);
-      var ser = new XmlSerializer(typeof(List<Boid.Settings>));
-      settings = (List<Boid.Settings>)ser.Deserialize(str);
+      using( var str = new FileStream(SettingsFileName, FileMode.Open) )
+        settings = (List<Boid.Settings>)serializer.Deserialize(str);
+    }
+    else
+    {
+      var xml = PlayerPrefs.GetString( "Settings" );
+
+      if( !string.IsNullOrEmpty(xml) )
+      {
+        var str = new StringReader(xml);
+        settings = (List<Boid.Settings>)serializer.Deserialize(str);
+      }
     }
 
     while( settings.Count < instancePoints.Length )
@@ -59,11 +69,17 @@ public class Main : MonoBehaviour
 
   void SaveSettings()
   {
-    var str = new StringWriter();
-    var ser = new XmlSerializer(typeof(List<Boid.Settings>));
-
-    ser.Serialize(str, settings);
-    PlayerPrefs.SetString( "Settings", str.ToString() );
+    if( Application.isEditor )
+    {
+      using( var str = new FileStream( SettingsFileName, FileMode.Create ) )
+        serializer.Serialize(str, settings);
+    }
+    else
+    {
+      var str = new StringWriter();
+      serializer.Serialize(str, settings);
+      PlayerPrefs.SetString( "Settings", str.ToString() );
+    }
   }
 
   private GameObject InstantiateBird( Vector3 position, Quaternion rotation, Boid.Settings settings )
