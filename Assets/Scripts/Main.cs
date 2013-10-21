@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Main : MonoBehaviour
 {
   public Object birdPrefab;
+  public Transform birdParent;
   private Transform cameraObj;
   public Transform[] instancePoints;
   private List<Boid.Settings> settings = new List<Boid.Settings>();
@@ -35,7 +36,7 @@ public class Main : MonoBehaviour
       {
         InstantiateBird(
           cameraObj.position + new Vector3( size * i, size * j, Random.Range( -size, size ) ),
-          Quaternion.Euler( Random.Range(-90, 90), Random.Range(-180, 180), 0),
+          MathTools.RandomYawPitchRotation(),
           sts
         );
       }
@@ -85,6 +86,7 @@ public class Main : MonoBehaviour
   private GameObject InstantiateBird( Vector3 position, Quaternion rotation, Boid.Settings settings )
   {
     var obj = (GameObject)Instantiate( birdPrefab, position, rotation );
+    obj.transform.parent = birdParent;
     obj.GetComponent<Boid>().SettingsRef = settings;
     return obj;
   }
@@ -117,6 +119,7 @@ public class Main : MonoBehaviour
       GUILayout.BeginVertical();
         guiTools.GuiFloatParam( ref sts.TotalForceMultipliyer, "Reaction speed", 50 );
         guiTools.GuiFloatParam( ref sts.Inertness, "Inertness", 1 );
+        guiTools.GuiFloatParam( ref sts.VerticalPriority, "Flock's shape deformation", 3 );
         guiTools.GuiFloatParam( ref sts.AttractrionForce, "Waypoint attraction force", 0.1f );
       GUILayout.EndVertical();
     GUILayout.EndHorizontal();
@@ -130,8 +133,8 @@ public class Main : MonoBehaviour
   {
     var tlbLabels = new string[] { "Restart", "Settings" };
     var tlbActions = new SimpleDlg[] {
-      () => Application.LoadLevel (Application.loadedLevelName),
-      () => {showSettingsWindow = !showSettingsWindow; if(!showSettingsWindow) SaveSettings(); }
+      () => { Application.LoadLevel(Application.loadedLevelName); SaveSettings(); },
+      () => { showSettingsWindow = !showSettingsWindow; if(!showSettingsWindow) SaveSettings(); }
     };
 
     var tlbResult = GUILayout.Toolbar( -1, tlbLabels );

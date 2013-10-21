@@ -7,8 +7,12 @@ using System.Linq;
 
 public class Trace: MonoBehaviour
 {
+  public Material normalState;
+  public Material activeState;
+
   public WayPoint[] wayPoints;
   private WayPoint curWP = null;
+
 
   public void Start()
   {
@@ -22,9 +26,10 @@ public class Trace: MonoBehaviour
     }
   }
 
-  static void SetTrigger( WayPoint wp, bool value )
+  void SetTrigger( WayPoint wp, bool value )
   {
     wp.GetComponent<SphereCollider>().isTrigger = value;
+    wp.renderer.material = value ? activeState : normalState;
   }
 
   [MenuItem ("GameEditor/Collect route from priority of waypoints")]

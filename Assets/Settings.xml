@@ -7,15 +7,27 @@
     <AligmentForcePart>0.002</AligmentForcePart>
     <TotalForceMultipliyer>12</TotalForceMultipliyer>
     <Inertness>0.5</Inertness>
+    <VerticalPriority>1</VerticalPriority>
     <AttractrionForce>0</AttractrionForce>
   </Settings>
   <Settings>
-    <SpeedMultipliyer>5.318841</SpeedMultipliyer>
+    <SpeedMultipliyer>8.217392</SpeedMultipliyer>
     <ViewRadius>0.5</ViewRadius>
-    <OptDistance>0.1724638</OptDistance>
-    <AligmentForcePart>0.0001</AligmentForcePart>
+    <OptDistance>0.157971</OptDistance>
+    <AligmentForcePart>0</AligmentForcePart>
     <TotalForceMultipliyer>6.927539</TotalForceMultipliyer>
     <Inertness>0.5</Inertness>
-    <AttractrionForce>0.04130435</AttractrionForce>
+    <VerticalPriority>1.217391</VerticalPriority>
+    <AttractrionForce>0.03623189</AttractrionForce>
+  </Settings>
+  <Settings>
+    <SpeedMultipliyer>5.072464</SpeedMultipliyer>
+    <ViewRadius>0.6</ViewRadius>
+    <OptDistance>0.2028985</OptDistance>
+    <AligmentForcePart>0.00315942</AligmentForcePart>
+    <TotalForceMultipliyer>12</TotalForceMultipliyer>
+    <Inertness>0.5</Inertness>
+    <VerticalPriority>1.282609</VerticalPriority>
+    <AttractrionForce>0</AttractrionForce>
   </Settings>
 </ArrayOfSettings>

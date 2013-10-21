@@ -15,6 +15,7 @@ public class Boid : MonoBehaviour
     public float AligmentForcePart = 0.002f;
     public float TotalForceMultipliyer = 12;
     public float Inertness = 0.5f;
+    public float VerticalPriority = 1.0f;
 
     [System.Xml.Serialization.XmlIgnore]
     public Trace Trace { get; set; }
@@ -100,6 +101,7 @@ public class Boid : MonoBehaviour
     if( neighbourCount > 0 )
     {
       centeroid = centeroid / neighbourCount - transform.position;
+      centeroid.y *= sts.VerticalPriority; //Spherical shape of flock looks unnatural, so let's scale it along y axis
       avgSpeed = avgSpeed / neighbourCount - velocity;
     }
 

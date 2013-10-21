@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 public static class MathTools
 {
@@ -58,7 +57,7 @@ public static class MathTools
         }
   }
 
-  public static float ClampAngle ( float angle, float min, float max )
+  public static float ClampAngle( float angle, float min, float max )
   {
     if (angle < -360)
       angle += 360;
@@ -97,7 +96,7 @@ public static class MathTools
 
   public static string ToS( Vector3 vec )
   {
-    return String.Format("{0:0.00000}:[{1:0.00000}, {2:0.00000}, {3:0.00000}]", vec.magnitude, vec.x, vec.y, vec.z );
+    return System.String.Format("{0:0.00000}:[{1:0.00000}, {2:0.00000}, {3:0.00000}]", vec.magnitude, vec.x, vec.y, vec.z );
   }
 
     //Projects vectors on plane XZ and calculate angle between them
@@ -137,5 +136,10 @@ public static class MathTools
   {
     //plot((1-cos(x))/2, x = 0..Pi);
     return ( 1 - Vector3.Dot(a, b) ) / 2;
+  }
+
+  public static Quaternion RandomYawPitchRotation()
+  {
+    return Quaternion.Euler( Random.Range(-90, 90), Random.Range(-180, 180), 0 );
   }
 }
