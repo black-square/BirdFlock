@@ -49,6 +49,7 @@ public static class BoidTools
       // RealConsts := {ViewRadius = 0.5, OptDistance = 0.1, sepForceAtOptDistance = 0.05, SpeedMultipliyer = 3};
       // plot( eval(f(x), eval(Res, RealConsts) ), x = 0..eval(ViewRadius, RealConsts) );
       forceDlg = null;
+      optDistance = sts.OptDistance;
 
       if( useSquareFunction )
       {
@@ -78,7 +79,16 @@ public static class BoidTools
       var revDir = cur - pointOnBounds;
       var dist = revDir.magnitude;
 
-      revDir /= dist;
+      if( dist <= MathTools.epsilon )
+      {
+        //Let's setup the direction to outside of colider
+        revDir = (pointOnBounds - cld.transform.position).normalized;
+
+        //and distance to N percent of OptDistance
+        dist = 0.1f * optDistance;
+      }
+      else
+        revDir /= dist;
 
       //Force depends on direction of bird: no need to turn a bird if it is flying in opposite direction
       force.dir = revDir * ( forceDlg(dist) * MathTools.AngleToFactor(revDir, birdDir) );
@@ -99,6 +109,7 @@ public static class BoidTools
     delegate float ForceDlg(float dist);
     readonly float factor1;
     readonly float factor2;
+    readonly float optDistance;
     readonly ForceDlg forceDlg;
   };
 }

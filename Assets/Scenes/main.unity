@@ -430,7 +430,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 179686766}
-  m_LocalRotation: {x: -.193561241, y: -.0754802451, z: .140157923, w: .968087137}
+  m_LocalRotation: {x: .00112919312, y: -.0375925824, z: -.0299137626, w: .998844743}
   m_LocalPosition: {x: .503193855, y: 2.17264295, z: -4.19675064}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
@@ -3297,7 +3297,7 @@ GameObject:
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!81 &2084867497
 AudioListener:

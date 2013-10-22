@@ -85,9 +85,9 @@ public static class MathTools
       var realRadius = sphc.radius * Mathf.Max( realScale.x, realScale.y, realScale.z );
       var dirLength = dir.magnitude;
 
-      //BoxCollider.ClosestPointOnBounds returns NaN if points are inside the volume
+      //BoxCollider.ClosestPointOnBounds returns cur if points are inside the volume
       if( dirLength < realRadius )
-        return new Vector3( float.NaN, float.NaN, float.NaN );
+        return cur;
 
       var dirFraction = realRadius / dirLength;
       return realPos + dirFraction * dir;
@@ -99,7 +99,7 @@ public static class MathTools
     return System.String.Format("{0:0.00000}:[{1:0.00000}, {2:0.00000}, {3:0.00000}]", vec.magnitude, vec.x, vec.y, vec.z );
   }
 
-    //Projects vectors on plane XZ and calculate angle between them
+  //Projects vectors on plane XZ and calculate angle between them
   public static float AngleXZProjected( Vector3 vec1, Vector3 vec2 )
   {
     vec1.y = 0;
@@ -127,6 +127,14 @@ public static class MathTools
   {
     #pragma warning disable 1718
     return q == q; //Comparisons to NaN always return false, no matter what the value of the float is.
+    #pragma warning restore 1718
+  }
+
+  //Check that Vector3 is not NaN
+  public static bool IsValid ( Vector3 v )
+  {
+    #pragma warning disable 1718
+    return v == v; //Comparisons to NaN always return false, no matter what the value of the float is.
     #pragma warning restore 1718
   }
 

@@ -61,9 +61,7 @@ public class CameraControl: MonoBehaviour
   
       foreach( var hit in hits )
       {
-        Boid boid = hit.collider.GetComponent<Boid>();
-  
-        if( boid )
+        if( hit.collider is BoxCollider || hit.collider is SphereCollider )
         {
           target = hit.collider.gameObject.transform;
           settings.isAttached = true;
