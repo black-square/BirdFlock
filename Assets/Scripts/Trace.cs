@@ -55,7 +55,7 @@ public class Trace: MonoBehaviour
     curTrace.wayPoints = list.ToArray();
   }
 
-  public Vector3 GetAtractionPoint( Boid.Settings sts )
+  public Vector3 GetAtractionPoint()
   {
     return curWP.transform.position;
   }

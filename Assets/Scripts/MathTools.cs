@@ -3,6 +3,7 @@ using UnityEngine;
 public static class MathTools
 {
   public const float epsilon = 1e-10f;
+  public const float sqrEpsilon = epsilon * epsilon;
 
   public static Vector3 StretchAlongAxis( Vector3 point, Vector3 stretchAxis, float stretchFactor )
   {

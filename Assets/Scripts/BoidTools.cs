@@ -16,21 +16,21 @@ public static class BoidTools
     public bool Calc( Vector3 cur, Vector3 other, out Vector3 force )
     {
       var revDir = cur - other;
-      var dist = revDir.magnitude;
+      var sqrDist = revDir.sqrMagnitude;
 
       force = Vector3.zero;
 
-      if( dist < MathTools.epsilon ) // Do not take into account oneself
+      if( sqrDist < MathTools.sqrEpsilon ) // Do not take into account oneself
         return false;
 
       //simplify( revDir / dist * (optFactor / dist) );
-      force = revDir * optFactor / ( dist * dist );
+      force = revDir * ( optFactor / sqrDist );
       return true;
     }
 
     public float Calc( float dist )
     {
-      return optFactor/ dist;
+      return optFactor / dist;
     }
     
     readonly float optFactor;

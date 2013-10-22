@@ -66,31 +66,33 @@ public class Boid : MonoBehaviour
     var avgSpeed = Vector3.zero;
     var neighbourCount = 0;
     var direction = transform.rotation * Vector3.forward;
+    var curPos = transform.position;
    
-    foreach( var cur in Physics.OverlapSphere(transform.position, sts.ViewRadius) )
+    foreach( var vis in Physics.OverlapSphere(curPos, sts.ViewRadius) )
     {
+      var visPos = vis.transform.position;
       Boid boid;
 
-      if( (boid = cur.GetComponent<Boid>()) != null ) //Birds processing
+      if( (boid = vis.GetComponent<Boid>()) != null ) //Birds processing
       {
         Vector3 separationForce;
 
-        if( !sepForce.Calc(transform.position, cur.transform.position, out separationForce) )
+        if( !sepForce.Calc(curPos, visPos, out separationForce) )
           continue;
 
         collisionAvoidance += separationForce;
         ++neighbourCount;
-        centeroid += cur.transform.position;
+        centeroid += visPos;
         avgSpeed += boid.velocity;
       }
-      else if( cur.GetComponent<WayPoint>() )
+      else if( vis.GetComponent<WayPoint>() )
       {
         //Just ignore WayPoints objects to skip collision avoidness
       }
       else //Obstacles processing
       {
         BoidTools.CollisionAvoidanceForce.Force force;
-        if( collAvoid.Calc(transform.position, direction, cur, out force) )
+        if( collAvoid.Calc(curPos, direction, vis, out force) )
         {
           collisionAvoidance += force.dir;
           Debug.DrawRay( force.pos, force.dir, Color.red );
@@ -100,17 +102,18 @@ public class Boid : MonoBehaviour
 
     if( neighbourCount > 0 )
     {
-      centeroid = centeroid / neighbourCount - transform.position;
+      centeroid = centeroid / neighbourCount - curPos;
       centeroid.y *= sts.VerticalPriority; //Spherical shape of flock looks unnatural, so let's scale it along y axis
       avgSpeed = avgSpeed / neighbourCount - velocity;
     }
 
-    //Debug.DrawRay( transform.position, centeroid, Color.magenta );
-    //Debug.DrawRay( transform.position, collisionAvoidance, Color.green );
+    //Debug.DrawRay( curPos, centeroid, Color.magenta );
+    //Debug.DrawRay( curPos, collisionAvoidance, Color.green );
 
     var positionForce = (1.0f - sts.AligmentForcePart) * sts.SpeedMultipliyer * (centeroid + collisionAvoidance);
     var alignmentForce = sts.AligmentForcePart * avgSpeed / Time.deltaTime;
-    var totalForce = sts.TotalForceMultipliyer * ( positionForce + alignmentForce + CalculateAttractionForce() );
+    var attractionForce = CalculateAttractionForce( sts, curPos, velocity );
+    var totalForce = sts.TotalForceMultipliyer * ( positionForce + alignmentForce + attractionForce );
 
     var newVelocity = (1 - sts.Inertness) * (totalForce * Time.deltaTime) + sts.Inertness * velocity;
 
@@ -121,9 +124,9 @@ public class Boid : MonoBehaviour
     if( MathTools.IsValid(rotation) )
       gameObject.transform.rotation = rotation;
 
-    Debug.DrawRay( transform.position, velocity, Color.grey );
-    Debug.DrawRay( transform.position, positionForce, Color.cyan );
-    Debug.DrawRay( transform.position, alignmentForce, Color.yellow );
+    Debug.DrawRay( curPos, velocity, Color.grey );
+    Debug.DrawRay( curPos, positionForce, Color.cyan );
+    Debug.DrawRay( curPos, alignmentForce, Color.yellow );
   }
 
   void Update()
@@ -131,15 +134,17 @@ public class Boid : MonoBehaviour
     transform.position += velocity * Time.deltaTime;
   }
 
-  Vector3 CalculateAttractionForce()
+  static Vector3 CalculateAttractionForce( Settings sts, Vector3 curPos, Vector3 curVelocity )
   {
     if( !sts.Trace )
       return Vector3.zero;
 
-    var pos = sts.Trace.GetAtractionPoint(sts);
-    var direction = (pos - transform.position).normalized;
+    var attrPos = sts.Trace.GetAtractionPoint();
+    var direction = (attrPos - curPos).normalized;
 
-    return sts.AttractrionForce * sts.SpeedMultipliyer * MathTools.AngleToFactor( direction, velocity ) * direction;
+    var factor = sts.AttractrionForce * sts.SpeedMultipliyer * MathTools.AngleToFactor( direction, curVelocity );
+
+    return factor * direction;
   }
 
   static Vector3 CalcNewVelocity( float minSpeed, Vector3 curVel, Vector3 dsrVel, Vector3 defaultVelocity )
@@ -193,7 +198,7 @@ public class Boid : MonoBehaviour
 
   static Quaternion CalcRotation( float inclineFactor, Vector3 velocity, Vector3 totalForce )
   {
-    if( velocity.sqrMagnitude < MathTools.epsilon )
+    if( velocity.sqrMagnitude < MathTools.sqrEpsilon )
       return new Quaternion( float.NaN, float.NaN, float.NaN, float.NaN );
 
     var rightVec = MathTools.RightVectorXZProjected(velocity);
