@@ -107,6 +107,9 @@ public class Main : MonoBehaviour
   {
     if( Input.GetKeyDown("space") )
       OnSettingsClick();
+
+    if( Input.GetKeyDown("tab") )
+      GetComponent<CameraControl>().settings.isAttached = false;
   }
 
   private GuiTools guiTools = new GuiTools();

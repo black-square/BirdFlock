@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CameraControl : MonoBehaviour
+public class CameraControl: MonoBehaviour
 {
   public Transform target;
 
@@ -10,7 +10,7 @@ public class CameraControl : MonoBehaviour
   {
     public Vector3 speed = new Vector3( -2.4f, 5.0f, 2.0f );
     public Vector3 rotation;
-    public float keyFactor = 0.005f;
+    public float keyFactor = 1.0f;
   
     public float distance = 2.0f;
     public float minDistance = 0.2f;
@@ -20,6 +20,8 @@ public class CameraControl : MonoBehaviour
     public bool rotateWithTarget = false;
 
     public bool isDisabled = false;
+    public Vector3 position = Vector3.zero;
+    public bool isAttached = true;
   }
 
   public Settings settings;
@@ -34,7 +36,11 @@ public class CameraControl : MonoBehaviour
       settings.rotation = transform.eulerAngles;
     
       if( target )
+      {
         settings.distance = (transform.position - target.transform.position).magnitude;
+        settings.position = target.transform.position;
+        settings.isAttached = true;
+      }
 
       globalSettings = settings;
     }
@@ -60,10 +66,16 @@ public class CameraControl : MonoBehaviour
         if( boid )
         {
           target = hit.collider.gameObject.transform;
+          settings.isAttached = true;
           break;
         }
       }
     }
+  }
+
+  private bool IsAttached()
+  {
+    return target && settings.isAttached;
   }
 
   void LateUpdate()
@@ -71,8 +83,8 @@ public class CameraControl : MonoBehaviour
     if( !settings.isDisabled )
       CheckForNewTarget();
 
-    if (!target)
-      return;
+    if( IsAttached() )
+      settings.position = target.transform.position;
 
     if( !settings.isDisabled )
     {
@@ -82,23 +94,42 @@ public class CameraControl : MonoBehaviour
   
       var distRaw = -Input.GetAxis("Mouse ScrollWheel") * settings.speed.z;
   
-      if( Input.GetKey("up") )
-        distRaw -= settings.speed.z * settings.keyFactor;
+      if( Input.GetKey(KeyCode.UpArrow) )
+        distRaw -= settings.speed.z * settings.keyFactor * Time.deltaTime;
   
-      if( Input.GetKey("down") )
-        distRaw += settings.speed.z * settings.keyFactor;
+      if( Input.GetKey(KeyCode.DownArrow) )
+        distRaw += settings.speed.z * settings.keyFactor * Time.deltaTime;
 
       settings.distance = Mathf.Max( settings.distance + distRaw, settings.minDistance );
     }
 
     var quatRot = Quaternion.identity;
 
-    if( settings.rotateWithTarget )
+    if( IsAttached() && settings.rotateWithTarget )
       quatRot *= target.rotation;
 
     quatRot *= Quaternion.Euler( settings.rotation );
 
+    if( !IsAttached() && !settings.isDisabled )
+    {
+      var shift = Vector3.zero;
+
+      if( Input.GetKey(KeyCode.W) )
+        shift.z += settings.speed.z * settings.keyFactor * Time.deltaTime;
+
+      if( Input.GetKey(KeyCode.S) )
+        shift.z -= settings.speed.z * settings.keyFactor * Time.deltaTime;
+
+      if( Input.GetKey(KeyCode.A) )
+        shift.x += settings.speed.x * settings.keyFactor * Time.deltaTime;
+
+      if( Input.GetKey(KeyCode.D) )
+        shift.x -= settings.speed.x * settings.keyFactor * Time.deltaTime;
+
+      settings.position += quatRot * shift;
+    }
+
     transform.rotation = quatRot;
-    transform.position = quatRot * new Vector3(0.0f, 0.0f, -settings.distance) + target.position;
+    transform.position = quatRot * new Vector3(0.0f, 0.0f, -settings.distance) + settings.position;
   }
 }

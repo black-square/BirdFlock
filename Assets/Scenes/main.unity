@@ -193,7 +193,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &107317994
 Renderer:
@@ -1249,7 +1249,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &581714294
 Renderer:
@@ -1777,7 +1777,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1076126759
 Renderer:
@@ -1949,7 +1949,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1170590623
 Renderer:
@@ -2033,7 +2033,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1182985376
 Renderer:
@@ -2706,7 +2706,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1838622879
 Renderer:
@@ -3374,13 +3374,15 @@ MonoBehaviour:
   settings:
     speed: {x: -2.4000001, y: 5, z: 2}
     rotation: {x: 0, y: 0, z: 0}
-    keyFactor: .00499999989
+    keyFactor: 1
     distance: 2
     minDistance: .200000003
     xMinLimit: -90
     xMaxLimit: 90
     rotateWithTarget: 0
     isDisabled: 0
+    position: {x: 0, y: 0, z: 0}
+    isAttached: 1
 --- !u!114 &2084867503
 MonoBehaviour:
   m_ObjectHideFlags: 0
