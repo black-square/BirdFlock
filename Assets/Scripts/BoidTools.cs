@@ -36,10 +36,18 @@ public static class BoidTools
     readonly float optFactor;
   };
 
+
+  //There was a delegate instead this define, but it was unoptimal because
+  //delegates create garbage:
+  //http://stackoverflow.com/questions/1582754/does-using-a-delegate-create-garbage
+  //#define COLLISION_AVOIDANCE_SQUARE
+
   public struct CollisionAvoidanceForce
   {
-    public CollisionAvoidanceForce( Boid.Settings sts, float sepForceAtOptDistance, bool useSquareFunction )
+    public CollisionAvoidanceForce( Boid.Settings sts, float sepForceAtOptDistance )
     {
+      optDistance = sts.OptDistance;
+
       // Maple:
       // restart;
       // f := x-> factor2*(factor1/x^2 - 1);
@@ -48,23 +56,16 @@ public static class BoidTools
       // Res := solve( F, {factor1, factor2} );
       // RealConsts := {ViewRadius = 0.5, OptDistance = 0.1, sepForceAtOptDistance = 0.05, SpeedMultipliyer = 3};
       // plot( eval(f(x), eval(Res, RealConsts) ), x = 0..eval(ViewRadius, RealConsts) );
-      forceDlg = null;
-      optDistance = sts.OptDistance;
 
-      if( useSquareFunction )
-      {
+      #if COLLISION_AVOIDANCE_SQUARE
         var ViewRadius2 = sts.ViewRadius * sts.ViewRadius;
         var OptDistance2 = sts.OptDistance * sts.OptDistance;
         factor1 = ViewRadius2;
         factor2 = -2 * sts.SpeedMultipliyer * sepForceAtOptDistance * OptDistance2 / ( OptDistance2 - ViewRadius2 );
-        forceDlg = CalcImplSquared;
-      }
-      else
-      {
+      #else
         factor1 = sts.ViewRadius;
         factor2 = -2 * sts.SpeedMultipliyer * sepForceAtOptDistance * sts.OptDistance / ( sts.OptDistance - sts.ViewRadius );
-        forceDlg = CalcImplLinear;
-      }
+      #endif
     }
 
     public struct Force
@@ -91,25 +92,26 @@ public static class BoidTools
         revDir /= dist;
 
       //Force depends on direction of bird: no need to turn a bird if it is flying in opposite direction
-      force.dir = revDir * ( forceDlg(dist) * MathTools.AngleToFactor(revDir, birdDir) );
+      force.dir = revDir * ( CalcImpl(dist) * MathTools.AngleToFactor(revDir, birdDir) );
       force.pos = pointOnBounds;
       return true;
     }
 
-    float CalcImplLinear( float dist )
-    {
-      return factor2 * (factor1 / dist - 1);
-    }
-
-    float CalcImplSquared( float dist )
-    {
-      return factor2 * (factor1 / (dist * dist) - 1);
-    }
+    #if COLLISION_AVOIDANCE_SQUARE
+      float CalcImpl( float dist )
+      {
+        return factor2 * (factor1 / (dist * dist) - 1);
+      }
+    #else
+      float CalcImpl( float dist )
+      {
+        return factor2 * (factor1 / dist - 1);
+      }
+    #endif
 
     delegate float ForceDlg(float dist);
     readonly float factor1;
     readonly float factor2;
     readonly float optDistance;
-    readonly ForceDlg forceDlg;
   };
 }

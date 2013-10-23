@@ -59,7 +59,7 @@ public class Boid : MonoBehaviour
     // alignmentForce
 
     var sepForce = new BoidTools.SeparationForce(sts);
-    var collAvoid = new BoidTools.CollisionAvoidanceForce( sts, sepForce.Calc(sts.OptDistance), false );
+    var collAvoid = new BoidTools.CollisionAvoidanceForce( sts, sepForce.Calc(sts.OptDistance) );
 
     var centeroid = Vector3.zero;
     var collisionAvoidance = Vector3.zero;

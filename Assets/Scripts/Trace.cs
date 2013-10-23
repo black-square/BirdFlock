@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -32,7 +31,8 @@ public class Trace: MonoBehaviour
     wp.renderer.material = value ? activeState : normalState;
   }
 
-  [MenuItem ("GameEditor/Collect route from priority of waypoints")]
+#if UNITY_EDITOR
+  [UnityEditor.MenuItem ("GameEditor/Collect route from priority of waypoints")]
   static void DoSomething ()
   {
     Trace curTrace = (Trace)FindObjectOfType( typeof(Trace) );
@@ -54,6 +54,7 @@ public class Trace: MonoBehaviour
     //ths.wayPoints = list.Select( (v) => v.gameObject ).ToArray();
     curTrace.wayPoints = list.ToArray();
   }
+#endif
 
   public Vector3 GetAtractionPoint()
   {
