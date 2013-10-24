@@ -151,4 +151,9 @@ public static class MathTools
   {
     return Quaternion.Euler( Random.Range(-90, 90), Random.Range(-180, 180), 0 );
   }
+
+  public static Vector3 RandomVectorInBox( float boxSize )
+  {
+    return new Vector3( Random.Range(-boxSize, boxSize), Random.Range(-boxSize, boxSize), Random.Range(-boxSize, boxSize) );
+  }
 }

@@ -58,11 +58,11 @@ public class CameraControl: MonoBehaviour
       rigidbody.freezeRotation = true;
   }
 
-  void CheckForNewTarget()
+  public void CheckForNewTarget( Vector3 mousePos )
   {
-    if( Input.GetMouseButtonDown(0) )
+    if( settings.isEnabled )
     {
-      var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+      var ray = Camera.main.ScreenPointToRay(mousePos);
       RaycastHit[] hits = Physics.RaycastAll( ray, Camera.main.farClipPlane );
   
       foreach( var hit in hits )
@@ -84,9 +84,6 @@ public class CameraControl: MonoBehaviour
 
   void LateUpdate()
   {
-    if( settings.isEnabled )
-      CheckForNewTarget();
-
     if( Input.GetKeyDown(KeyCode.Tab) )
       settings.isAttached = false;
 

@@ -10,12 +10,12 @@ class GuiTools
     return float.TryParse(val, out res);
   }
 
-  public void GuiFloatParam( ref float value, string caption, float maxValue )
+  public void FloatParam( ref float value, string caption, float maxValue )
   {
     float oldValue = value;
     string text;
 
-    if( !guiFloatParamAuxData.TryGetValue(caption, out text) )
+    if( !guiStringParamAuxData.TryGetValue(caption, out text) )
       text = value.ToString();
 
     if( normalTextField == null )
@@ -47,11 +47,44 @@ class GuiTools
     if( float.TryParse(text, out res) )
       value = res;
 
-    guiFloatParamAuxData[caption] = text;
+    guiStringParamAuxData[caption] = text;
   }
 
+  public int Switcher( int curValue, string caption, string[] texts )
+  {
+    GUILayout.BeginVertical("box");
+      GUILayout.Label(caption);
+      var newValue = GUILayout.Toolbar( curValue, texts );
+    GUILayout.EndVertical();
 
-  private Dictionary<string, string> guiFloatParamAuxData = new Dictionary<string, string>();
+   return newValue;
+  }
+
+  public void ClearCache()
+  {
+    guiStringParamAuxData.Clear();
+  }
+
+  public bool MouseOverGUI { get{ return isMouseOverGUI; } }
+
+  public void ManualUpdate()
+  {
+    isMouseOverGUI = false;
+  }
+
+  public void CheckMouseOverForLastControl()
+  {
+    //See example:
+    //http://docs.unity3d.com/Documentation/ScriptReference/GUILayoutUtility.GetLastRect.html
+    if( Event.current.type != EventType.Repaint )
+      return;
+
+    if( GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) )
+      isMouseOverGUI = true;
+  }
+
+  private Dictionary<string, string> guiStringParamAuxData = new Dictionary<string, string>();
   private GUIStyle normalTextField = null;
   private GUIStyle alertTextField = null;
+  private bool isMouseOverGUI = false;
 };
