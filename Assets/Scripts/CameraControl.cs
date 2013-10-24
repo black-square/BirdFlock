@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class CameraControl: MonoBehaviour
 {
-  public Transform target;
+  [SerializeField]
+  private Transform target;
 
   [Serializable]
   public class Settings
@@ -19,15 +20,20 @@ public class CameraControl: MonoBehaviour
     public float xMaxLimit = 90;
     public bool rotateWithTarget = false;
 
-    public bool isDisabled = false;
+    public bool isEnabled = true;
     public Vector3 position = Vector3.zero;
     public bool isAttached = true;
   }
 
-  public Settings settings;
+  [SerializeField]
+  private Settings settings;
+
+  //static is used to keep values after restart
   static private Settings globalSettings;
 
-  public static Settings GlobalSettings { get{ return globalSettings; } }
+  public bool Enabled { get{ return settings.isEnabled; } set{ settings.isEnabled = value; } }
+  public bool Attached { get{ return settings.isAttached; } set{ settings.isAttached = value; } }
+  public Transform Target { get{ return target; } set{ target = value; }   }
 
   void Start()
   {
@@ -78,13 +84,16 @@ public class CameraControl: MonoBehaviour
 
   void LateUpdate()
   {
-    if( !settings.isDisabled )
+    if( settings.isEnabled )
       CheckForNewTarget();
+
+    if( Input.GetKeyDown(KeyCode.Tab) )
+      settings.isAttached = false;
 
     if( IsAttached() )
       settings.position = target.transform.position;
 
-    if( !settings.isDisabled )
+    if( settings.isEnabled )
     {
       settings.rotation.x += Input.GetAxis("Mouse Y") * settings.speed.x;
       settings.rotation.y += Input.GetAxis("Mouse X") * settings.speed.y;
@@ -108,7 +117,7 @@ public class CameraControl: MonoBehaviour
 
     quatRot *= Quaternion.Euler( settings.rotation );
 
-    if( !IsAttached() && !settings.isDisabled )
+    if( settings.isEnabled )
     {
       var shift = Vector3.zero;
 
@@ -124,7 +133,11 @@ public class CameraControl: MonoBehaviour
       if( Input.GetKey(KeyCode.D) )
         shift.x -= settings.speed.x * settings.keyFactor * Time.deltaTime;
 
-      settings.position += quatRot * shift;
+      if( shift != Vector3.zero )
+      {
+        settings.position += quatRot * shift;
+        settings.isAttached = false;
+      }
     }
 
     transform.rotation = quatRot;

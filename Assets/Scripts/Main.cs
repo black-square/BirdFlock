@@ -18,7 +18,7 @@ public class Main : MonoBehaviour
   {
     LoadSettings();
     InstantiateBirds();
-    CameraControl.GlobalSettings.isDisabled = false;
+    GetComponent<CameraControl>().Enabled = true;
   }
 
   void InstantiateBirds()
@@ -34,7 +34,7 @@ public class Main : MonoBehaviour
 
     cameraObj = InstantiateBird( ip.position, ip.rotation, sts ).transform;
 
-    GetComponent<CameraControl>().target = cameraObj;
+    GetComponent<CameraControl>().Target = cameraObj;
 
     for( int i = lbrd; i < rbrd; ++i )
       for( int j = lbrd; j < rbrd; ++j )
@@ -99,9 +99,6 @@ public class Main : MonoBehaviour
   {
     if( Input.GetKeyDown("space") )
       OnSettingsClick();
-
-    if( Input.GetKeyDown("tab") )
-      GetComponent<CameraControl>().settings.isAttached = false;
   }
 
   private GuiTools guiTools = new GuiTools();
@@ -137,7 +134,7 @@ public class Main : MonoBehaviour
     if(!showSettingsWindow)
       SaveSettings();
 
-    CameraControl.GlobalSettings.isDisabled = showSettingsWindow;
+    GetComponent<CameraControl>().Enabled = !showSettingsWindow;
   }
 
   void Restart()
