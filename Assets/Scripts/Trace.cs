@@ -27,7 +27,7 @@ public class Trace: MonoBehaviour
 
   void SetTrigger( WayPoint wp, bool value )
   {
-    wp.GetComponent<SphereCollider>().isTrigger = value;
+    wp.collider.isTrigger = value;
     wp.renderer.material = value ? activeState : normalState;
   }
 

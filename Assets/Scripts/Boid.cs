@@ -22,6 +22,11 @@ public class Boid : MonoBehaviour
     public float AttractrionForce = 0.02f;
   }
 
+  public interface ITrigger
+  {
+    void OnTouch( Boid boid );
+  }
+
   private Settings sts = null;
   public Settings SettingsRef {
     get { return sts; }
@@ -72,6 +77,7 @@ public class Boid : MonoBehaviour
     {
       var visPos = vis.transform.position;
       Boid boid;
+      ITrigger trigger;
 
       if( (boid = vis.GetComponent<Boid>()) != null ) //Birds processing
       {
@@ -85,9 +91,10 @@ public class Boid : MonoBehaviour
         centeroid += visPos;
         avgSpeed += boid.velocity;
       }
-      else if( vis.GetComponent<WayPoint>() )
+      else if( (trigger = vis.GetInterface<ITrigger>()) != null )
       {
-        //Just ignore WayPoints objects to skip collision avoidness
+        if( collider.bounds.Intersects(vis.bounds) )
+          trigger.OnTouch(this);
       }
       else //Obstacles processing
       {

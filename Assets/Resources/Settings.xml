@@ -21,7 +21,7 @@
       <Inertness>0.5</Inertness>
       <VerticalPriority>1.217391</VerticalPriority>
       <AttractrionForce>0.2463768</AttractrionForce>
-      <BirdsCount>15</BirdsCount>
+      <BirdsCount>18</BirdsCount>
     </BoidSettingsEx>
     <BoidSettingsEx>
       <SpeedMultipliyer>4</SpeedMultipliyer>
@@ -35,6 +35,6 @@
       <BirdsCount>10</BirdsCount>
     </BoidSettingsEx>
   </boidSettings>
-  <instancePointNum>2</instancePointNum>
+  <instancePointNum>1</instancePointNum>
   <showSettingsWindow>false</showSettingsWindow>
 </Settings>
