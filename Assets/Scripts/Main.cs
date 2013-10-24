@@ -23,6 +23,7 @@ public class Main : MonoBehaviour
     public List<BoidSettingsEx> boidSettings = new List<BoidSettingsEx>();
     public int instancePointNum = 0;
     public bool showSettingsWindow = false;
+    public Boid.DebugSettings debugSettings = new Boid.DebugSettings();
   }
 
   [SerializeField]
@@ -106,11 +107,15 @@ public class Main : MonoBehaviour
     }
   }
 
-  private GameObject InstantiateBird( Vector3 position, Quaternion rotation, Boid.Settings settings )
+  private GameObject InstantiateBird( Vector3 position, Quaternion rotation, Boid.Settings boidSettings )
   {
     var obj = (GameObject)Instantiate( birdPrefab, position, rotation );
+    var boid = obj.GetComponent<Boid>();
+
     obj.transform.parent = birdParent;
-    obj.GetComponent<Boid>().SettingsRef = settings;
+    boid.SettingsRef = boidSettings;
+    boid.DebugSettingsRef = settings.debugSettings;
+
     return obj;
   }
 
