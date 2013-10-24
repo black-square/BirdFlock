@@ -48,24 +48,22 @@ public class Main : MonoBehaviour
   }
 
   private readonly XmlSerializer serializer = new XmlSerializer(typeof(List<Boid.Settings>));
-  private string SettingsFileName { get{ return Application.dataPath + Path.DirectorySeparatorChar +  "Settings.xml";} }
+  private string SettingsFileName { get{ return "Settings"; } }
+  private string SettingsFilePath { get{ return Application.dataPath + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar + SettingsFileName + ".xml";} }
 
   void LoadSettings()
   {
     if( Application.isEditor )
     {
-      using( var str = new FileStream(SettingsFileName, FileMode.Open) )
+      using( var str = new FileStream(SettingsFilePath, FileMode.Open) )
         settings = (List<Boid.Settings>)serializer.Deserialize(str);
     }
     else
     {
-      var xml = PlayerPrefs.GetString( "Settings" );
-
-      if( !string.IsNullOrEmpty(xml) )
-      {
-        var str = new StringReader(xml);
-        settings = (List<Boid.Settings>)serializer.Deserialize(str);
-      }
+      TextAsset temp = (TextAsset)Resources.Load(SettingsFileName);
+      var str = new StringReader(temp.text);
+      Destroy( temp );
+      settings = (List<Boid.Settings>)serializer.Deserialize(str);
     }
 
     while( settings.Count < instancePoints.Length )
@@ -77,14 +75,8 @@ public class Main : MonoBehaviour
   {
     if( Application.isEditor )
     {
-      using( var str = new FileStream( SettingsFileName, FileMode.Create ) )
+      using( var str = new FileStream( SettingsFilePath, FileMode.Create ) )
         serializer.Serialize(str, settings);
-    }
-    else
-    {
-      var str = new StringWriter();
-      serializer.Serialize(str, settings);
-      PlayerPrefs.SetString( "Settings", str.ToString() );
     }
   }
 
