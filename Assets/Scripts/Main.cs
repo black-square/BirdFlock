@@ -141,7 +141,7 @@ public class Main : MonoBehaviour
         guiTools.FloatParam( ref sts.AligmentForcePart, "Fraction of flock aligment force", 0.01f );
       GUILayout.EndVertical();
       GUILayout.BeginVertical();
-        guiTools.FloatParam( ref sts.BirdsCount, "Total number of birds (Restart Required)", 20 );
+        guiTools.FloatParam( ref sts.BirdsCount, "Number of birds ^ 2 (Restart Required)", 32 );
         guiTools.FloatParam( ref sts.TotalForceMultipliyer, "Reaction speed", 50 );
         guiTools.FloatParam( ref sts.Inertness, "Inertness", 1 );
         guiTools.FloatParam( ref sts.VerticalPriority, "Flock's shape deformation", 3 );

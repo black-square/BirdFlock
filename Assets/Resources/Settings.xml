@@ -21,7 +21,7 @@
       <Inertness>0.5</Inertness>
       <VerticalPriority>1.217391</VerticalPriority>
       <AttractrionForce>0.2463768</AttractrionForce>
-      <BirdsCount>18</BirdsCount>
+      <BirdsCount>20</BirdsCount>
     </BoidSettingsEx>
     <BoidSettingsEx>
       <SpeedMultipliyer>4</SpeedMultipliyer>
