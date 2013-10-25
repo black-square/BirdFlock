@@ -36,29 +36,28 @@
     </BoidSettingsEx>
   </boidSettings>
   <instancePointNum>1</instancePointNum>
-  <showSettingsWindow>false</showSettingsWindow>
   <debugSettings>
-    <enableDrawing>true</enableDrawing>
+    <enableDrawing>false</enableDrawing>
     <obstaclesAvoidanceDraw>true</obstaclesAvoidanceDraw>
     <obstaclesAvoidanceColor>
       <r>1</r>
       <g>0</g>
       <b>0</b>
-      <a>1</a>
+      <a>0.768627465</a>
     </obstaclesAvoidanceColor>
-    <velocityDraw>true</velocityDraw>
+    <velocityDraw>false</velocityDraw>
     <velocityColor>
       <r>0.5</r>
       <g>0.5</g>
       <b>0.5</b>
-      <a>1</a>
+      <a>0.549019635</a>
     </velocityColor>
     <positionForceDraw>true</positionForceDraw>
     <positionForceColor>
       <r>0</r>
-      <g>1</g>
-      <b>1</b>
-      <a>1</a>
+      <g>0.5808823</g>
+      <b>0.5808823</b>
+      <a>0.5921569</a>
     </positionForceColor>
     <alignmentForceDraw>true</alignmentForceDraw>
     <alignmentForceColor>
@@ -72,28 +71,30 @@
       <r>1</r>
       <g>0</g>
       <b>1</b>
-      <a>1</a>
+      <a>0.392156869</a>
     </cohesionForceColor>
     <collisionsAvoidanceForceDraw>false</collisionsAvoidanceForceDraw>
     <collisionsAvoidanceForceColor>
       <r>0</r>
-      <g>1</g>
-      <b>0</b>
-      <a>1</a>
+      <g>0.131034851</g>
+      <b>1</b>
+      <a>0.6431373</a>
     </collisionsAvoidanceForceColor>
     <attractionForceDraw>false</attractionForceDraw>
     <attractionForceColor>
       <r>0</r>
       <g>1</g>
       <b>0</b>
-      <a>1</a>
+      <a>0.494117647</a>
     </attractionForceColor>
     <totalForceDraw>false</totalForceDraw>
     <totalForceColor>
-      <r>0</r>
+      <r>0.6758623</r>
       <g>0</g>
-      <b>0</b>
-      <a>1</a>
+      <b>1</b>
+      <a>0.7294118</a>
     </totalForceColor>
   </debugSettings>
+  <showSettingsWindow>false</showSettingsWindow>
+  <settingsWindowTab>0</settingsWindowTab>
 </Settings>

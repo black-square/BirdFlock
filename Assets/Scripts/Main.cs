@@ -22,8 +22,9 @@ public class Main : MonoBehaviour
   {
     public List<BoidSettingsEx> boidSettings = new List<BoidSettingsEx>();
     public int instancePointNum = 0;
-    public bool showSettingsWindow = false;
     public Boid.DebugSettings debugSettings = new Boid.DebugSettings();
+    public bool showSettingsWindow = false;
+    public int settingsWindowTab = 0;
   }
 
   [SerializeField]
@@ -43,7 +44,7 @@ public class Main : MonoBehaviour
       settings = globalSettings;
 
     InstantiateBirds();
-    cameraControl.Enabled = true;
+    cameraControl.Enabled = !settings.showSettingsWindow;
   }
 
   void InstantiateBirds()
@@ -127,7 +128,7 @@ public class Main : MonoBehaviour
 
   private GuiTools guiTools = new GuiTools();
 
-  void SettingsWindow( int windowId )
+  void GuiBoidSettings()
   {
     var sts = settings.boidSettings[settings.instancePointNum];
 
@@ -153,6 +154,71 @@ public class Main : MonoBehaviour
       settings.instancePointNum = newInstancePointNum;
       Restart();
     }
+  }
+
+  void GuiDebugDrawSettings()
+  {
+    GUILayout.BeginVertical("box");
+      guiTools.Toggle( ref settings.debugSettings.enableDrawing, "Enable Additional Drawing" );
+    GUILayout.EndVertical();
+
+    if( settings.debugSettings.enableDrawing )
+    {
+      GUILayout.BeginVertical("box");
+        guiTools.Toggle( ref settings.debugSettings.velocityDraw, "Resulting velocity" );
+        guiTools.Toggle( ref settings.debugSettings.cohesionForceDraw, "Cohesion force" );
+        guiTools.Toggle( ref settings.debugSettings.collisionsAvoidanceForceDraw, "Collision Avoidance force" );
+        guiTools.Toggle( ref settings.debugSettings.positionForceDraw, "Cohesion + Collision Avoidance forces" );
+        guiTools.Toggle( ref settings.debugSettings.obstaclesAvoidanceDraw, "Obstacles Avoidance forces" );
+        guiTools.Toggle( ref settings.debugSettings.alignmentForceDraw, "Aligment force" );
+        guiTools.Toggle( ref settings.debugSettings.attractionForceDraw, "Attraction force" );
+        guiTools.Toggle( ref settings.debugSettings.totalForceDraw, "Resulting force" );
+      GUILayout.EndVertical();
+    }
+  }
+
+  void GuiInfo()
+  {
+    var text =
+      "AUTHOR\n" +
+      "   \n" +
+      "   Dmitry Shesterkin\n" +
+      "   http://black-square.github.io/BirdFlock/\n" +
+      "   dfb@yandex.ru\n" +
+      "   \n" +
+      "CONTROLS\n" +
+      "   \n" +
+      "   Space - Toggle settings\n" +
+      "   Mouse - Camera rotation\n" +
+      "   Left Mouse Click - Change camera target\n" +
+      "   Tab - Detach camera from target\n" +
+      "   Mouse ScrollWheel / Up / Down - Zoom\n" +
+      "   W/A/S/D - Manual camera movement"  ;
+
+    GUILayout.BeginVertical("box");
+      GUILayout.Label( text );
+    GUILayout.EndVertical();
+  }
+
+  void SettingsWindow( int windowId )
+  {
+    GUILayout.BeginVertical();
+      settings.settingsWindowTab = GUILayout.Toolbar( settings.settingsWindowTab, new string[]{ "Birds Params", "Forces Drawing", "Info" } );
+
+      switch(settings.settingsWindowTab)
+      {
+        case 0:
+          GuiBoidSettings();
+        break;
+        case 1:
+          GuiDebugDrawSettings();
+        break;
+        case 2:
+          GuiInfo();
+        break;
+      }
+
+    GUILayout.EndVertical();
   }
 
   delegate void SimpleDlg();

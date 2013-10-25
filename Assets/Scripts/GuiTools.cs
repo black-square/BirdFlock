@@ -60,6 +60,11 @@ class GuiTools
    return newValue;
   }
 
+  public void Toggle( ref bool value, string caption )
+  {
+    value = GUILayout.Toggle( value, caption );
+  }
+
   public void ClearCache()
   {
     guiStringParamAuxData.Clear();
