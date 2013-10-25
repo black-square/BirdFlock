@@ -193,7 +193,8 @@ public class Main : MonoBehaviour
       "   Left Mouse Click - Change camera target\n" +
       "   Tab - Detach camera from target\n" +
       "   Mouse ScrollWheel / Up / Down - Zoom\n" +
-      "   W/A/S/D - Manual camera movement"  ;
+      "   W/A/S/D - Manual camera movement\n" +
+      "   Hold Right Mouse Button - Disable camera rotation";
 
     GUILayout.BeginVertical("box");
       GUILayout.Label( text );

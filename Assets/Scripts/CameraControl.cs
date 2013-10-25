@@ -92,9 +92,12 @@ public class CameraControl: MonoBehaviour
 
     if( settings.isEnabled )
     {
-      settings.rotation.x += Input.GetAxis("Mouse Y") * settings.speed.x;
-      settings.rotation.y += Input.GetAxis("Mouse X") * settings.speed.y;
-      settings.rotation.x = MathTools.ClampAngle(settings.rotation.x, settings.xMinLimit, settings.xMaxLimit);
+      if( !Input.GetMouseButton(1) )
+      {
+        settings.rotation.x += Input.GetAxis("Mouse Y") * settings.speed.x;
+        settings.rotation.y += Input.GetAxis("Mouse X") * settings.speed.y;
+        settings.rotation.x = MathTools.ClampAngle(settings.rotation.x, settings.xMinLimit, settings.xMaxLimit);
+      }
   
       var distRaw = -Input.GetAxis("Mouse ScrollWheel") * settings.speed.z;
   
