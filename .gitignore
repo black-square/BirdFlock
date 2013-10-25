@@ -7,5 +7,4 @@
 /*.userprefs
 /*.unityproj
 /*.DS_store
-LightmapFar-*.*
-LightmapNear-*.*
+Lightmap*-*.*
