@@ -14,7 +14,7 @@ public class Main : MonoBehaviour
   [System.Serializable]
   public class BoidSettingsEx: Boid.Settings
   {
-    public float BirdsCount = 10;
+    public float BirdsCount = 100;
   }
 
   [System.Serializable]
@@ -54,25 +54,20 @@ public class Main : MonoBehaviour
 
     sts.Trace = ip.GetComponent<Trace>();
 
-    float size = 0.1f;
-    int birdsCount = (int)( sts.BirdsCount + 0.5f );
-
-    int lbrd = -birdsCount / 2;
-    int rbrd = lbrd + birdsCount;
+    const float size = 0.1f;
 
     cameraObj = InstantiateBird( ip.position, ip.rotation, sts ).transform;
-
     cameraControl.Target = cameraObj;
 
-    for( int i = lbrd; i < rbrd; ++i )
-      for( int j = lbrd; j < rbrd; ++j )
-      {
+    MathTools.FillSquareUniform( sts.BirdsCount, delegate ( int x, int y )
+    {
+      if( x != 0 || y != 0 )
         InstantiateBird(
-          cameraObj.position + new Vector3( size * i, size * j, Random.Range(-size, size) ),
+          cameraObj.position + new Vector3( size * x, size * y, Random.Range(-size, size) ),
           MathTools.RandomYawPitchRotation(),
           sts
         );
-      }
+    });
   }
 
   private readonly XmlSerializer serializer = new XmlSerializer(typeof(Settings));
@@ -141,7 +136,7 @@ public class Main : MonoBehaviour
         guiTools.FloatParam( ref sts.AligmentForcePart, "Fraction of flock aligment force", 0.01f );
       GUILayout.EndVertical();
       GUILayout.BeginVertical();
-        guiTools.FloatParam( ref sts.BirdsCount, "Number of birds ^ 2 (Restart Required)", 32 );
+        guiTools.FloatParam( ref sts.BirdsCount, "Number of birds (Restart Required)", 1000 );
         guiTools.FloatParam( ref sts.TotalForceMultipliyer, "Reaction speed", 50 );
         guiTools.FloatParam( ref sts.Inertness, "Inertness", 1 );
         guiTools.FloatParam( ref sts.VerticalPriority, "Flock's shape deformation", 3 );

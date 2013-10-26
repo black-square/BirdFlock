@@ -158,4 +158,28 @@ public static class MathTools
   {
     return new Vector3( Random.Range(-boxSize, boxSize), Random.Range(-boxSize, boxSize), Random.Range(-boxSize, boxSize) );
   }
+
+  public delegate void PlacePoint( int x, int y );
+
+  public static void FillSquareUniform( float totalNumber, PlacePoint dlg )
+  {
+    int mainSize = (int)Mathf.Sqrt(totalNumber);
+
+    int lbrd = -mainSize / 2;
+    int rbrd = lbrd + mainSize;
+
+    for( int x = lbrd; x < rbrd; ++x )
+      for( int y = lbrd; y < rbrd; ++y )
+        dlg( x, y );
+
+    int restOfItems = (int)(totalNumber + 0.5f) - mainSize * mainSize;
+    --lbrd;
+    ++rbrd;
+
+    for( int y = rbrd -1; y > lbrd && restOfItems > 0; --y, --restOfItems )
+      dlg( rbrd - 1, y );
+
+    for( int x = lbrd + 1; restOfItems > 0; ++x, --restOfItems )
+      dlg( x, rbrd - 1 );
+  }
 }

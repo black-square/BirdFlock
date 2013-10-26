@@ -10,7 +10,7 @@
       <Inertness>0.5</Inertness>
       <VerticalPriority>1</VerticalPriority>
       <AttractrionForce>0</AttractrionForce>
-      <BirdsCount>10</BirdsCount>
+      <BirdsCount>100</BirdsCount>
     </BoidSettingsEx>
     <BoidSettingsEx>
       <SpeedMultipliyer>12</SpeedMultipliyer>
@@ -21,7 +21,7 @@
       <Inertness>0.5</Inertness>
       <VerticalPriority>1.217391</VerticalPriority>
       <AttractrionForce>0.2463768</AttractrionForce>
-      <BirdsCount>18</BirdsCount>
+      <BirdsCount>350</BirdsCount>
     </BoidSettingsEx>
     <BoidSettingsEx>
       <SpeedMultipliyer>4</SpeedMultipliyer>
@@ -32,7 +32,7 @@
       <Inertness>0.7</Inertness>
       <VerticalPriority>1.239131</VerticalPriority>
       <AttractrionForce>0</AttractrionForce>
-      <BirdsCount>10</BirdsCount>
+      <BirdsCount>100</BirdsCount>
     </BoidSettingsEx>
   </boidSettings>
   <instancePointNum>1</instancePointNum>
