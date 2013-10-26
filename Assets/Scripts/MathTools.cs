@@ -3,7 +3,9 @@ using UnityEngine;
 public static class MathTools
 {
   public const float epsilon = 1e-10f;
-  public const float sqrEpsilon = epsilon * epsilon;
+
+  //1e-20f is too small and sometimes leads to incorrect detection of zero vector
+  public const float sqrEpsilon = 1e-10f;
 
   public static Vector3 StretchAlongAxis( Vector3 point, Vector3 stretchAxis, float stretchFactor )
   {
