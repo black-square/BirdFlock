@@ -1,27 +1,134 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Unity Web Player | Bird Flocking Simulation by Dmitry Shesterkin</title>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 		<script type='text/javascript' src='javascripts/jquery.min.js'></script>
 		<script type="text/javascript" src='javascripts/UnityObject2.js'></script>
 		<script type="text/javascript" src='javascripts/UnityPlugin.js'></script>
 		<link rel='stylesheet' type='text/css' href='stylesheets/unity.css' />
-	</head>
-	<body>
-		<div class="content">
-			<div id="unityPlayer">
-				<div class="missing">
-					<a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now!">
-						<img alt="Unity Web Player. Install now!" src="http://webplayer.unity3d.com/installation/getunity.png" width="193" height="63" />
-					</a>
+
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>mango2d by black-square</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>mango2d</h1>
+        <h2>Rapid 2D Game Prototyping Engine</h2>
+        <a href="https://github.com/black-square/mango2d" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+		
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+				<h1><a name="mango2d" class="anchor" href="#mango2d"><span class="octicon octicon-link"></span></a>mango2d</h1>
+				<h2><a name="live-demo" class="anchor" href="#live-demo"><span class="octicon octicon-link"></span></a>Live In-Browser Demo</h2>
+				</section>
+				<!--UnityPlayerBegin-->
+				<div class="content">
+					<div id="unityPlayer">
+						<div class="missing">
+							<a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now!">
+								<img alt="Unity Web Player. Install now!" src="http://webplayer.unity3d.com/installation/getunity.png" width="193" height="63" />
+							</a>
+						</div>
+						<div class="broken">
+							<a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now! Restart your browser after install.">
+								<img alt="Unity Web Player. Install now! Restart your browser after install." src="http://webplayer.unity3d.com/installation/getunityrestart.png" width="193" height="63" />
+							</a>
+						</div>
+					</div>
 				</div>
-				<div class="broken">
-					<a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now! Restart your browser after install.">
-						<img alt="Unity Web Player. Install now! Restart your browser after install." src="http://webplayer.unity3d.com/installation/getunityrestart.png" width="193" height="63" />
-					</a>
-				</div>
-			</div>
-		</div>
-	</body>
+				<!--UnityPlayerEnd-->
+<section id="main-content">        
+<h2>
+<a name="rapid-2d-game-prototyping-engine" class="anchor" href="#rapid-2d-game-prototyping-engine"><span class="octicon octicon-link"></span></a>Rapid 2D Game Prototyping Engine</h2>
+
+<p><strong>mango2d</strong> is a cross platform 2D game engine specially designed for fast 2D games prototyping. 
+It uses <strong>C++11</strong> and <a href="http://wwww.boost.org">BOOST libraries</a> to provide powerful yet easy-to-use 
+features out of the box. It is highly modulized and based on <a href="http://www.libsdl.org/">SDL Framework</a>, 
+but uses only <strong>OpenGL</strong> for rendering. </p>
+
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Cross platform developing on Windows and Mac OS</li>
+<li><a href="http://choosealicense.com/licenses/mit/">Mit licence</a></li>
+<li>Components oriented: you can use only modules that you want</li>
+<li>Logging, common macroses, easy string formating (<code>boost::format</code> based)</li>
+<li>Powerful <strong>Point</strong>, <strong>Rect</strong>, <strong>Size</strong> and <strong>Color</strong> classes that interact with each other</li>
+<li>Many <strong>interpolation functions</strong> including physically reliable spring formula</li>
+<li>
+<strong>Intrusive lists</strong> for fast collection manipulating without memory allocations </li>
+<li>
+<strong>Sprites</strong> loading from common formats (PNG, JPG, TIFF) and drawing with scale, 
+transparency and color blending. One texture can contain many frames</li>
+<li>
+<strong>Fonts</strong> loading from TTF format</li>
+<li><strong>Sound engine</strong></li>
+<li><strong>Particles engine</strong></li>
+<li>
+<strong>GUI framework</strong>: collection of GUI widgets and GUI states for rapid interface development</li>
+<li>Special <code>boost::shared_ptr</code> <strong>delete strategy</strong> that keeps 
+object destruction until <code>Update()</code> method finishes, but weak pointers become expired immediately. 
+It simplifies AI logic</li>
+<li>etc.</li>
+</ul><p>For more information and documentation, please have a look at the
+<a href="https://github.com/black-square/mango2d/blob/master/README.md">project page</a></p>
+
+<h2>
+<a name="demos" class="anchor" href="#demos"><span class="octicon octicon-link"></span></a>Demos</h2>
+
+<h3>
+<a name="gemsgame" class="anchor" href="#gemsgame"><span class="octicon octicon-link"></span></a>GemsGame</h3>
+
+<p>Puzzle game where you need to match three gems of the same color in a row.</p>
+
+<p><img src="https://raw.github.com/wiki/black-square/mango2d/img/GemsGame2.jpg" alt="GemsGame screenshot"></p>
+
+<p><a href="https://github.com/black-square/GemsGame/blob/master/README.md">More info and Mac/Win binaries links</a></p>
+
+<h3>
+<a name="taggame" class="anchor" href="#taggame"><span class="octicon octicon-link"></span></a>TagGame</h3>
+
+<p>Grid-based game where you need to decoy enemies to the traps but at the same time you need to avoid 
+situation when they touch the hero.</p>
+
+<p><img src="https://raw.github.com/wiki/black-square/mango2d/img/TagGame.png" alt="TagGame screenshot"></p>
+
+<p><a href="https://github.com/black-square/TagGame/blob/master/README.md">More info and Mac/Win binaries links</a></p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/black-square/mango2d/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/black-square/mango2d/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/black-square/mango2d"></a> is maintained by <a href="https://github.com/black-square">black-square</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
 </html>

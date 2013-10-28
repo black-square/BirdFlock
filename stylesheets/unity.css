@@ -24,6 +24,16 @@ div.broken {
 }
 div#unityPlayer {
   cursor: default;
+  clear: both;
   height: 600px;
   width: 960px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+@media print {
+  div.content {
+    visibility:hidden;
+    height: 0px;
+  }
 }
