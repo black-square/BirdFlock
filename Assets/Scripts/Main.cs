@@ -59,7 +59,7 @@ public class Main : MonoBehaviour
   {
     if( globalSettings == null )
     {
-      LoadSettings();
+      settings = LoadSettings();
       globalSettings = settings;
     }
     else
@@ -96,23 +96,26 @@ public class Main : MonoBehaviour
   private string SettingsFileName { get{ return "Settings"; } }
   private string SettingsFilePath { get{ return Application.dataPath + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar + SettingsFileName + ".xml";} }
 
-  void LoadSettings()
+  Settings LoadSettings()
   {
+    Settings res;
     if( Application.isEditor )
     {
       using( var str = new FileStream(SettingsFilePath, FileMode.Open) )
-        settings = (Settings)serializer.Deserialize(str);
+        res = (Settings)serializer.Deserialize(str);
     }
     else
     {
       TextAsset temp = (TextAsset)Resources.Load(SettingsFileName);
       var str = new StringReader(temp.text);
       Destroy( temp );
-      settings = (Settings)serializer.Deserialize(str);
+      res = (Settings)serializer.Deserialize(str);
     }
 
-    while( settings.boidSettings.Count < instancePoints.Length )
-      settings.boidSettings.Add(new BoidSettingsEx());
+    while( res.boidSettings.Count < instancePoints.Length )
+      res.boidSettings.Add(new BoidSettingsEx());
+
+    return res;
   }
 
 
@@ -153,7 +156,7 @@ public class Main : MonoBehaviour
       GUILayout.BeginVertical();
         var newInstancePointNum = guiTools.Switcher( settings.instancePointNum, "Instance point", new string[]{ "WayPoints", "Box", "Freedom" } );
         guiTools.FloatParam( ref sts.SpeedMultipliyer, "Speed", 20 );
-        guiTools.FloatParam( ref sts.ViewRadius, "View distance", 20 );
+        guiTools.FloatParam( ref sts.ViewRadius, "Bird's view distance", 20 );
         guiTools.FloatParam( ref sts.OptDistance, "Optimal distance between birds", 2 );
         guiTools.FloatParam( ref sts.AligmentForcePart, "Fraction of flock aligment force", 0.01f );
       GUILayout.EndVertical();
@@ -162,9 +165,16 @@ public class Main : MonoBehaviour
         guiTools.FloatParam( ref sts.TotalForceMultipliyer, "Reaction speed", 50 );
         guiTools.FloatParam( ref sts.Inertness, "Inertness", 1 );
         guiTools.FloatParam( ref sts.VerticalPriority, "Flock's shape deformation", 3 );
-        guiTools.FloatParam( ref sts.AttractrionForce, "Waypoint attraction force", 1.0f );
+        guiTools.FloatParam( ref sts.AttractrionForce, "Waypoint's attraction force", 1.0f );
       GUILayout.EndVertical();
     GUILayout.EndHorizontal();
+
+    if( GUILayout.Button("Load default parameters") )
+    {
+      var defSt = LoadSettings();
+      settings.boidSettings[settings.instancePointNum] = defSt.boidSettings[settings.instancePointNum];
+      Restart();
+    }
 
     if( newInstancePointNum != settings.instancePointNum )
     {
@@ -192,7 +202,7 @@ public class Main : MonoBehaviour
         Screen.fullScreen = false;
 
     GUILayout.BeginVertical("box");
-      guiTools.Toggle( ref settings.debugSettings.enableDrawing, "Enable Additional Drawing" );
+      guiTools.Toggle( ref settings.debugSettings.enableDrawing, "Algorithm Explanation Vectors" );
     GUILayout.EndVertical();
 
     if( settings.debugSettings.enableDrawing )
@@ -223,7 +233,7 @@ public class Main : MonoBehaviour
       "   \n" +
       "   Space - Toggle settings\n" +
       "   Mouse - Camera rotation\n" +
-      "   Left Mouse Click - Change camera target\n" +
+      "   Left Mouse Click - Attach camera to target\n" +
       "   Tab - Detach camera from target\n" +
       "   Mouse ScrollWheel / Up / Down - Zoom\n" +
       "   W/A/S/D - Manual camera movement\n" +
