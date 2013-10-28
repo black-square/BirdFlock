@@ -3,63 +3,9 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Unity Web Player | Bird Flocking Simulation by Dmitry Shesterkin</title>
-		<script type='text/javascript' src='jquery.min.js'></script>
-		<script type="text/javascript">
-		<!--
-		var unityObjectUrl = "UnityObject2.js";
-		if (document.location.protocol == 'https:')
-			unityObjectUrl = unityObjectUrl.replace("http://", "https://ssl-");
-		document.write('<script type="text\/javascript" src="' + unityObjectUrl + '"><\/script>');
-		-->
-		</script>
-		<script type="text/javascript">
-		<!--
-			var config = {
-				width: 960, 
-				height: 600,
-				params: { enableDebugging:"0" }
-				
-			};
-			var u = new UnityObject2(config);
-
-			jQuery(function() {
-
-				var $missingScreen = jQuery("#unityPlayer").find(".missing");
-				var $brokenScreen = jQuery("#unityPlayer").find(".broken");
-				$missingScreen.hide();
-				$brokenScreen.hide();
-				
-				u.observeProgress(function (progress) {
-					switch(progress.pluginStatus) {
-						case "broken":
-							$brokenScreen.find("a").click(function (e) {
-								e.stopPropagation();
-								e.preventDefault();
-								u.installPlugin();
-								return false;
-							});
-							$brokenScreen.show();
-						break;
-						case "missing":
-							$missingScreen.find("a").click(function (e) {
-								e.stopPropagation();
-								e.preventDefault();
-								u.installPlugin();
-								return false;
-							});
-							$missingScreen.show();
-						break;
-						case "installed":
-							$missingScreen.remove();
-						break;
-						case "first":
-						break;
-					}
-				});
-				u.initPlugin(jQuery("#unityPlayer")[0], "https://raw.github.com/wiki/black-square/BirdFlock/release/BoidResult.unity3d");
-			});
-		-->
-		</script>
+		<script type='text/javascript' src='javascripts/jquery.min.js'></script>
+		<script type="text/javascript" src='javascripts/UnityObject2.js'></script>
+		<script type="text/javascript" src='javascripts/UnityPlugin.js'></script>
 		<style type="text/css">
 		<!--
 		body {
