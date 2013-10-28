@@ -1,0 +1,29 @@
+div.content {
+  margin: auto;
+  width: 960px;
+}
+div.broken,
+div.missing {
+  margin: auto;
+  position: relative;
+  top: 50%;
+  width: 193px;
+}
+div.broken a,
+div.missing a {
+  height: 63px;
+  position: relative;
+  top: -31px;
+}
+div.broken img,
+div.missing img {
+  border-width: 0px;
+}
+div.broken {
+  display: none;
+}
+div#unityPlayer {
+  cursor: default;
+  height: 600px;
+  width: 960px;
+}
