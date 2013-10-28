@@ -32,7 +32,7 @@
       <Inertness>0.7</Inertness>
       <VerticalPriority>1.239131</VerticalPriority>
       <AttractrionForce>0</AttractrionForce>
-      <BirdsCount>100</BirdsCount>
+      <BirdsCount>300</BirdsCount>
     </BoidSettingsEx>
   </boidSettings>
   <instancePointNum>0</instancePointNum>

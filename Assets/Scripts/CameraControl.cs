@@ -58,6 +58,11 @@ public class CameraControl: MonoBehaviour
       rigidbody.freezeRotation = true;
   }
 
+  public void ResetStoredSettings()
+  {
+    globalSettings = null;
+  }
+
   public void CheckForNewTarget( Vector3 mousePos )
   {
     if( settings.isEnabled )

@@ -169,6 +169,7 @@ public class Main : MonoBehaviour
     if( newInstancePointNum != settings.instancePointNum )
     {
       settings.instancePointNum = newInstancePointNum;
+      cameraControl.ResetStoredSettings();
       Restart();
     }
   }
