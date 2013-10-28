@@ -2,17 +2,6 @@
 <Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <boidSettings>
     <BoidSettingsEx>
-      <SpeedMultipliyer>3</SpeedMultipliyer>
-      <ViewRadius>0.5</ViewRadius>
-      <OptDistance>0.1</OptDistance>
-      <AligmentForcePart>0.003</AligmentForcePart>
-      <TotalForceMultipliyer>5</TotalForceMultipliyer>
-      <Inertness>0.5</Inertness>
-      <VerticalPriority>1</VerticalPriority>
-      <AttractrionForce>0</AttractrionForce>
-      <BirdsCount>100</BirdsCount>
-    </BoidSettingsEx>
-    <BoidSettingsEx>
       <SpeedMultipliyer>12</SpeedMultipliyer>
       <ViewRadius>0.6</ViewRadius>
       <OptDistance>0.2</OptDistance>
@@ -22,6 +11,17 @@
       <VerticalPriority>1.217391</VerticalPriority>
       <AttractrionForce>0.2463768</AttractrionForce>
       <BirdsCount>350</BirdsCount>
+    </BoidSettingsEx>
+    <BoidSettingsEx>
+      <SpeedMultipliyer>3</SpeedMultipliyer>
+      <ViewRadius>0.5</ViewRadius>
+      <OptDistance>0.1</OptDistance>
+      <AligmentForcePart>0.003</AligmentForcePart>
+      <TotalForceMultipliyer>5</TotalForceMultipliyer>
+      <Inertness>0.5</Inertness>
+      <VerticalPriority>1</VerticalPriority>
+      <AttractrionForce>0</AttractrionForce>
+      <BirdsCount>100</BirdsCount>
     </BoidSettingsEx>
     <BoidSettingsEx>
       <SpeedMultipliyer>4</SpeedMultipliyer>
@@ -35,7 +35,7 @@
       <BirdsCount>100</BirdsCount>
     </BoidSettingsEx>
   </boidSettings>
-  <instancePointNum>1</instancePointNum>
+  <instancePointNum>0</instancePointNum>
   <debugSettings>
     <enableDrawing>false</enableDrawing>
     <obstaclesAvoidanceDraw>true</obstaclesAvoidanceDraw>
@@ -95,6 +95,4 @@
       <a>0.7294118</a>
     </totalForceColor>
   </debugSettings>
-  <showSettingsWindow>false</showSettingsWindow>
-  <settingsWindowTab>0</settingsWindowTab>
 </Settings>

@@ -124,8 +124,8 @@ QualitySettings:
     Android: 0
     BlackBerry: 0
     FlashPlayer: 0
-    Standalone: 0
+    Standalone: 2
     WP8: 0
-    Web: 0
+    Web: 2
     Windows Store Apps: 0
     iPhone: 0

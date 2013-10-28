@@ -24,7 +24,7 @@ PlayerSettings:
   m_UseDX11: 0
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
-  displayResolutionDialog: 1
+  displayResolutionDialog: 2
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 1
   allowedAutorotateToLandscapeRight: 1
@@ -41,7 +41,7 @@ PlayerSettings:
   enableHWStatistics: 1
   usePlayerLog: 1
   stripPhysics: 0
-  forceSingleInstance: 0
+  forceSingleInstance: 1
   resizableWindow: 1
   useMacAppStoreValidation: 0
   gpuSkinning: 1
@@ -49,7 +49,7 @@ PlayerSettings:
   xboxEnableKinect: 0
   xboxEnableKinectAutoTracking: 0
   xboxEnableFitness: 0
-  macFullscreenMode: 2
+  macFullscreenMode: 1
   xboxSpeechDB: 0
   xboxEnableHeadOrientation: 0
   wiiHio2Usage: -1
@@ -148,7 +148,10 @@ PlayerSettings:
   ps3SaveGameSlots: 1
   ps3TrialMode: 0
   flashStrippingLevel: 2
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    data:
+      first: 2
+      second: 
   metroPackageName: Boids
   metroPackageLogo: 
   metroPackageVersion: 

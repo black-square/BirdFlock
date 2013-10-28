@@ -36,7 +36,7 @@ Renderer:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_CastShadows: 0
-  m_ReceiveShadows: 0
+  m_ReceiveShadows: 1
   m_LightmapIndex: 0
   m_LightmapTilingOffset: {x: NaN, y: NaN, z: NaN, w: NaN}
   m_Materials:

@@ -18,13 +18,35 @@ public class Main : MonoBehaviour
   }
 
   [System.Serializable]
+  public struct Size
+  {
+    public int width;
+    public int height;
+
+    public Size( int width, int height )
+    {
+      this.width = width;
+      this.height = height;
+    }
+
+    public bool IsValid { get{ return width > 0 && height > 0; } }
+  }
+
+  [System.Serializable]
   public class Settings
   {
     public List<BoidSettingsEx> boidSettings = new List<BoidSettingsEx>();
     public int instancePointNum = 0;
     public Boid.DebugSettings debugSettings = new Boid.DebugSettings();
+
+    [System.Xml.Serialization.XmlIgnore]
     public bool showSettingsWindow = false;
+
+    [System.Xml.Serialization.XmlIgnore]
     public int settingsWindowTab = 0;
+
+    [System.Xml.Serialization.XmlIgnore]
+    public Size screenSize = new Size();
   }
 
   [SerializeField]
@@ -129,7 +151,7 @@ public class Main : MonoBehaviour
 
     GUILayout.BeginHorizontal();
       GUILayout.BeginVertical();
-        var newInstancePointNum = guiTools.Switcher( settings.instancePointNum, "Instance point", new string[]{ "Box", "WayPoints", "Freedom" } );
+        var newInstancePointNum = guiTools.Switcher( settings.instancePointNum, "Instance point", new string[]{ "WayPoints", "Box", "Freedom" } );
         guiTools.FloatParam( ref sts.SpeedMultipliyer, "Speed", 20 );
         guiTools.FloatParam( ref sts.ViewRadius, "View distance", 20 );
         guiTools.FloatParam( ref sts.OptDistance, "Optimal distance between birds", 2 );
@@ -153,6 +175,21 @@ public class Main : MonoBehaviour
 
   void GuiDebugDrawSettings()
   {
+    GUILayout.BeginVertical("box");
+      var newFullScreen = GUILayout.Toggle( Screen.fullScreen, "Fullscreen" );
+    GUILayout.EndVertical();
+
+    if( newFullScreen != Screen.fullScreen )
+      if( newFullScreen)
+      {
+        settings.screenSize = new Size( Screen.width, Screen.height );
+        Screen.SetResolution( Screen.currentResolution.width, Screen.currentResolution.height, true );
+      }
+      else if( settings.screenSize.IsValid )
+        Screen.SetResolution( settings.screenSize.width, settings.screenSize.height, false );
+      else
+        Screen.fullScreen = false;
+
     GUILayout.BeginVertical("box");
       guiTools.Toggle( ref settings.debugSettings.enableDrawing, "Enable Additional Drawing" );
     GUILayout.EndVertical();
@@ -199,7 +236,7 @@ public class Main : MonoBehaviour
   void SettingsWindow( int windowId )
   {
     GUILayout.BeginVertical();
-      settings.settingsWindowTab = GUILayout.Toolbar( settings.settingsWindowTab, new string[]{ "Birds Params", "Forces Drawing", "Info" } );
+      settings.settingsWindowTab = GUILayout.Toolbar( settings.settingsWindowTab, new string[]{ "Birds Params", "Screen", "Info" } );
 
       switch(settings.settingsWindowTab)
       {
