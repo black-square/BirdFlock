@@ -99,18 +99,11 @@ public class Main : MonoBehaviour
   Settings LoadSettings()
   {
     Settings res;
-    if( Application.isEditor )
-    {
-      using( var str = new FileStream(SettingsFilePath, FileMode.Open) )
-        res = (Settings)serializer.Deserialize(str);
-    }
-    else
-    {
-      TextAsset temp = (TextAsset)Resources.Load(SettingsFileName);
-      var str = new StringReader(temp.text);
-      Destroy( temp );
-      res = (Settings)serializer.Deserialize(str);
-    }
+
+    TextAsset temp = (TextAsset)Resources.Load(SettingsFileName);
+    var str = new StringReader(temp.text);
+    Resources.UnloadAsset(temp);
+    res = (Settings)serializer.Deserialize(str);
 
     while( res.boidSettings.Count < instancePoints.Length )
       res.boidSettings.Add(new BoidSettingsEx());
