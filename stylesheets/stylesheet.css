@@ -101,8 +101,15 @@ header h2 {
 }
 
 #main-content {
-  width: 740px;
   float: left;
+}
+
+.full-size-content {
+  width: 100%;
+}
+
+.narrow-size-content {
+  width: 740px;
 }
 
 #main-content img {

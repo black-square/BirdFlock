@@ -1,25 +1,28 @@
 div.content {
-  margin: auto;
+  margin-bottom: 30px;
+  background: #8FC0DB;
+}
+
+div.content, div.broken, div.missing, div.playBtn {
+  height: 600px;
   width: 960px;
+  clear: both;
+  position: relative;
 }
-div.broken,
-div.missing {
+
+div.broken img, div.missing img, div.playBtn img {
+  height: auto;
+  padding: 0;
+  overflow: auto;
   margin: auto;
-  position: relative;
-  top: 50%;
-  width: 193px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
-div.broken a,
-div.missing a {
-  height: 63px;
-  position: relative;
-  top: -31px;
-}
-div.broken img,
-div.missing img {
-  border-width: 0px;
-}
-div.broken {
+
+div.broken, div.missing {
   display: none;
 }
 div#unityPlayer {
@@ -27,12 +30,11 @@ div#unityPlayer {
   clear: both;
   height: 600px;
   width: 960px;
-  padding-bottom: 20px;
 }
 
 @media print {
   div.content {
-    visibility:hidden;
-    height: 0px;
+    display: none;
   }
 }
+

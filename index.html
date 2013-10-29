@@ -31,7 +31,7 @@
 		
     <div id="content-wrapper">
       <div class="inner clearfix">
-        <section id="main-content">
+        <section id="main-content" class="full-size-content">
 				<h1><a name="live-demo" class="anchor" href="#mango2d"><span class="octicon octicon-link"></span></a>Live In-Browser Demo</h1>
 				<p>Live Demo requires <a href="http://unity3d.com/webplayer/">Unity Web Player (free)</a>. You can also download stand-alone executable for Windows/Mac/Linux too.</p>
  
@@ -39,6 +39,11 @@
 				<!--UnityPlayerBegin-->
 				<div class="content">
 					<div id="unityPlayer">
+						<div class="playBtn">
+							<a href="#" onclick="jQuery( LaunchUniy ); return false;" >
+								<img alt="Start Live Demo!" src="http://raw.github.com/wiki/black-square/BirdFlock/img_pg/play-button.png" width="400" height="400" />
+							</a>
+						</div>
 						<div class="missing">
 							<a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now!">
 								<img alt="Unity Web Player. Install now!" src="http://webplayer.unity3d.com/installation/getunity.png" width="193" height="63" />
@@ -52,7 +57,7 @@
 					</div>
 				</div>
 				<!--UnityPlayerEnd-->
-<section id="main-content">      
+<section id="main-content" class="narrow-size-content">      
 <h2>
 <a name="rapid-2d-game-prototyping-engine" class="anchor" href="#rapid-2d-game-prototyping-engine"><span class="octicon octicon-link"></span></a>Rapid 2D Game Prototyping Engine</h2>
 
@@ -97,7 +102,7 @@ It simplifies AI logic</li>
 
 <p>Puzzle game where you need to match three gems of the same color in a row.</p>
 
-<p><img src="https://raw.github.com/wiki/black-square/mango2d/img/GemsGame2.jpg" alt="GemsGame screenshot"></p>
+<p><img src="http://raw.github.com/wiki/black-square/BirdFlock/img/img01.jpg" alt="GemsGame screenshot"></p>
 
 <p><a href="https://github.com/black-square/GemsGame/blob/master/README.md">More info and Mac/Win binaries links</a></p>
 
@@ -113,12 +118,24 @@ situation when they touch the hero.</p>
         </section>
 
         <aside id="sidebar">
-          <a href="https://github.com/black-square/mango2d/zipball/master" class="button">
-            <small>Download</small>
+				  <a href="https://github.com/black-square/BirdFlock/releases/latest" class="button">
+            <small>Stand-alone executable</small>
+            Windows
+          </a>
+					<a href="https://github.com/black-square/BirdFlock/releases/latest" class="button">
+            <small>Stand-alone executable</small>
+            Mac OS X
+          </a>
+					<a href="https://github.com/black-square/BirdFlock/releases/latest" class="button">
+            <small>Stand-alone executable</small>
+            Ubuntu
+          </a>
+          <a href="https://github.com/black-square/BirdFlock/zipball/master" class="button">
+            <small>Sources</small>
             .zip file
           </a>
-          <a href="https://github.com/black-square/mango2d/tarball/master" class="button">
-            <small>Download</small>
+          <a href="https://github.com/black-square/BirdFlock/tarball/master" class="button">
+            <small>Sources</small>
             .tar.gz file
           </a>
 

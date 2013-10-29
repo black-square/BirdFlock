@@ -4,22 +4,27 @@ var config = {
   height: 600,
   params: { enableDebugging:"0", disableContextMenu: true }
 };
-var u = new UnityObject2(config);
+var unityPlayer = null;
 
-jQuery(function() {
+function LaunchUniy() {
+  if(unityPlayer == null )
+    unityPlayer = new UnityObject2(config);
 
   var $missingScreen = jQuery("#unityPlayer").find(".missing");
   var $brokenScreen = jQuery("#unityPlayer").find(".broken");
+  var $playBtnScreen = jQuery("#unityPlayer").find(".playBtn");
+  
   $missingScreen.hide();
   $brokenScreen.hide();
+  $playBtnScreen.remove();
   
-  u.observeProgress(function (progress) {
+  unityPlayer.observeProgress(function (progress) {
     switch(progress.pluginStatus) {
       case "broken":
         $brokenScreen.find("a").click(function (e) {
           e.stopPropagation();
           e.preventDefault();
-          u.installPlugin();
+          unityPlayer.installPlugin();
           return false;
         });
         $brokenScreen.show();
@@ -28,7 +33,7 @@ jQuery(function() {
         $missingScreen.find("a").click(function (e) {
           e.stopPropagation();
           e.preventDefault();
-          u.installPlugin();
+          unityPlayer.installPlugin();
           return false;
         });
         $missingScreen.show();
@@ -40,5 +45,5 @@ jQuery(function() {
       break;
     }
   });
-  u.initPlugin(jQuery("#unityPlayer")[0], pluginUrl);
-});
+  unityPlayer.initPlugin(jQuery("#unityPlayer")[0], pluginUrl);
+}
