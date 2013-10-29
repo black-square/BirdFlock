@@ -7,6 +7,8 @@ public static class MathTools
   //1e-20f is too small and sometimes leads to incorrect detection of zero vector
   public const float sqrEpsilon = 1e-10f;
 
+
+  //Scale point along stretchAxis by stretchFactor
   public static Vector3 StretchAlongAxis( Vector3 point, Vector3 stretchAxis, float stretchFactor )
   {
     var upVector = Vector3.up;
@@ -114,8 +116,16 @@ public static class MathTools
   //Projects vectors on plane XZ and turn it right on 90deg
   public static Vector3 RightVectorXZProjected( Vector3 vec )
   {
-    vec.y = 0;
-    return Quaternion.AngleAxis(90, Vector3.up) * vec;
+    //We do the same as:
+    //  vec.y = 0;
+    //  return Quaternion.AngleAxis(90, Vector3.up) * vec;
+    //but faster
+    //http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+
+    const float sin = 1.0f;
+    const float cos = 0.0f;
+
+    return new Vector3( cos * vec.x + sin * vec.z, 0, -sin * vec.x + cos * vec.z);
   }
 
   //Returns magnitude of vector vec projected on vecNormal
@@ -161,6 +171,7 @@ public static class MathTools
 
   public delegate void PlacePoint( int x, int y );
 
+  //Place totalNumber of elements in order of square
   public static void FillSquareUniform( float totalNumber, PlacePoint dlg )
   {
     int mainSize = (int)Mathf.Sqrt(totalNumber);

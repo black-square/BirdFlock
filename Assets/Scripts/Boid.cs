@@ -100,7 +100,7 @@ public class Boid : MonoBehaviour
     //http://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/
     //http://www.red3d.com/cwr/boids/
 
-    //Bird is affected by 3 forses:
+    //Bird is affected by 3 base forses:
     // cohesion
     // separation + collisionAvoidance
     // alignmentForce
@@ -108,10 +108,14 @@ public class Boid : MonoBehaviour
     var sepForce = new BoidTools.SeparationForce(sts);
     var collAvoid = new BoidTools.CollisionAvoidanceForce( sts, sepForce.Calc(sts.OptDistance) );
 
+    //Geometric center of visible birds
     var centeroid = Vector3.zero;
+
     var collisionAvoidance = Vector3.zero;
     var avgSpeed = Vector3.zero;
     var neighbourCount = 0;
+
+    //Store it as an optimization
     var direction = transform.rotation * Vector3.forward;
     var curPos = transform.position;
    
@@ -153,8 +157,13 @@ public class Boid : MonoBehaviour
 
     if( neighbourCount > 0 )
     {
+      //Cohesion force. It makes united formula with BoidTools.SeparationForce
       centeroid = centeroid / neighbourCount - curPos;
-      centeroid.y *= sts.VerticalPriority; //Spherical shape of flock looks unnatural, so let's scale it along y axis
+
+      //Spherical shape of flock looks unnatural, so let's scale it along y axis
+      centeroid.y *= sts.VerticalPriority;
+
+      //Difference between current bird speed and average speed of visible birds
       avgSpeed = avgSpeed / neighbourCount - velocity;
     }
 
@@ -205,6 +214,8 @@ public class Boid : MonoBehaviour
     transform.position += velocity * Time.deltaTime;
   }
 
+
+  //Force which attracts birds to waypoints
   static Vector3 CalculateAttractionForce( Settings sts, Vector3 curPos, Vector3 curVelocity )
   {
     if( !sts.Trace )
@@ -213,6 +224,7 @@ public class Boid : MonoBehaviour
     var attrPos = sts.Trace.GetAtractionPoint();
     var direction = (attrPos - curPos).normalized;
 
+    //The force have an effect only on direction and shouldn't increase speed if bird flies in the right direction
     var factor = sts.AttractrionForce * sts.SpeedMultipliyer * MathTools.AngleToFactor( direction, curVelocity );
 
     return factor * direction;
@@ -222,7 +234,7 @@ public class Boid : MonoBehaviour
   {
     //We have to take into account that bird can't change their direction instantly. That's why
     //dsrVel (desired velocity) influence first of all on flying direction and after that on
-    //velocity oneself
+    //velocity magnitude oneself
 
     var curVelLen = curVel.magnitude;
 
@@ -241,10 +253,12 @@ public class Boid : MonoBehaviour
     {
       dsrVel /= dsrVelLen;
 
+      //We spend a part of velocity magnitude on bird rotation and the rest of it on speed magnitude changing
+
       //Map rotation to factor [0..1]
       var angleFactor = MathTools.AngleToFactor(dsrVel, curVel);
 
-      //If dsrVel is twice bigger than curVelLen bird can rotate on any angle
+      //If dsrVel magnitude is twice bigger than curVelLen then bird can rotate on any angle
       var rotReqLength = 2 * curVelLen * angleFactor;
 
       //Velocity magnitude remained after rotation
@@ -267,11 +281,17 @@ public class Boid : MonoBehaviour
     return curVel * resultLen;
   }
 
+  //Birds should incline when they turn
   static Quaternion CalcRotation( float inclineFactor, Vector3 velocity, Vector3 totalForce )
   {
     if( velocity.sqrMagnitude < MathTools.sqrEpsilon )
       return new Quaternion( float.NaN, float.NaN, float.NaN, float.NaN );
 
+    //We project force on right vector and multiply it by factor
+
+    //Instead of true calculation of right vector we use a trick with projection on XZ, but
+    //this trick doesn't work if bird flies strictly vertically. In order to fix it we
+    //have to know unmodified UP vector of bird.
     var rightVec = MathTools.RightVectorXZProjected(velocity);
     var inclineDeg = MathTools.VecProjectedLength( totalForce, rightVec ) * -inclineFactor;
     return Quaternion.LookRotation( velocity ) * Quaternion.AngleAxis(Mathf.Clamp(inclineDeg, -90, 90), Vector3.forward);
