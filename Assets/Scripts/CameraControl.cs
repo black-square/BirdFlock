@@ -87,6 +87,11 @@ public class CameraControl: MonoBehaviour
     return target && settings.isAttached;
   }
 
+  private bool IsRotateWithTarget()
+  {
+    return IsAttached() && settings.rotateWithTarget;
+  }
+
   void LateUpdate()
   {
     if( Input.GetKeyDown(KeyCode.Tab) )
@@ -115,12 +120,14 @@ public class CameraControl: MonoBehaviour
       settings.distance = Mathf.Max( settings.distance + distRaw, settings.minDistance );
     }
 
-    var quatRot = Quaternion.identity;
+    if( IsRotateWithTarget() )
+    {
+      settings.rotation = target.rotation.eulerAngles;
+      settings.rotation.z = 0;
+      settings.rotation.x += 5;
+    }
 
-    if( IsAttached() && settings.rotateWithTarget )
-      quatRot *= target.rotation;
-
-    quatRot *= Quaternion.Euler( settings.rotation );
+    var quatRot = Quaternion.Euler( settings.rotation );
 
     if( settings.isEnabled )
     {
@@ -137,6 +144,15 @@ public class CameraControl: MonoBehaviour
 
       if( Input.GetKey(KeyCode.D) )
         shift.x -= settings.speed.x * settings.keyFactor * Time.deltaTime;
+
+      if( Input.GetKey(KeyCode.Q) )
+        shift.y -= settings.speed.y * settings.keyFactor * Time.deltaTime;
+
+      if( Input.GetKey(KeyCode.E) )
+        shift.y += settings.speed.y * settings.keyFactor * Time.deltaTime;
+
+      if( Input.GetKeyDown(KeyCode.T) )
+        settings.rotateWithTarget = !settings.rotateWithTarget;
 
       if( shift != Vector3.zero )
       {

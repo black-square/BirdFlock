@@ -223,25 +223,28 @@ public class Main : MonoBehaviour
   void GuiInfo()
   {
     var text =
-      "AUTHOR\n" +
+      "<b><color=yellow>Bird Flocking Simulation</color></b>\n" +
       "   \n" +
-      "   Dmitry Shesterkin\n" +
+      "   <b><color=orange>Dmitry Shesterkin 2013</color></b>\n" +
       "   http://black-square.github.io/BirdFlock/\n" +
       "   dfb@yandex.ru\n" +
       "   \n" +
-      "CONTROLS\n" +
+      "<b><color=yellow>Controls</color></b>\n" +
       "   \n" +
-      "   Space - Toggle settings\n" +
-      "   Mouse - Camera rotation\n" +
-      "   Left Mouse Click - Attach camera to target\n" +
-      "   Tab - Detach camera from target\n" +
-      "   Mouse ScrollWheel / Up / Down - Zoom\n" +
-      "   W/A/S/D - Manual camera movement\n" +
-      "   Hold Right Mouse Button - Disable camera rotation";
+      "   <b><color=orange>Space</color></b> - Toggle settings\n" +
+      "   <b><color=orange>Mouse</color></b> - Camera rotation\n" +
+      "   <b><color=orange>Left Mouse Button Click</color></b> - Attach camera to target\n" +
+      "   <b><color=orange>Tab</color></b> - Detach camera from target\n" +
+      "   <b><color=orange>T</color></b> - Rotate camera with target\n" +
+      "   <b><color=orange>Mouse ScrollWheel / Up / Down</color></b> - Zoom\n" +
+      "   <b><color=orange>W/A/S/D/Q/E</color></b> - Manual camera movement\n" +
+      "   <b><color=orange>Hold Right Mouse Button</color></b> - Disable camera rotation";
 
-    GUILayout.BeginVertical("box");
-      GUILayout.Label( text );
-    GUILayout.EndVertical();
+    GUI.skin.box.richText = true;
+    GUI.skin.box.wordWrap = false;
+    GUI.skin.box.alignment = TextAnchor.MiddleLeft;
+
+    GUILayout.Box( text );
   }
 
   void SettingsWindow( int windowId )
