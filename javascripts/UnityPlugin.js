@@ -1,4 +1,4 @@
-var pluginUrl="http://raw.github.com/wiki/black-square/BirdFlock/release/BoidResult.unity3d";
+var pluginUrl="http://black-square.github.io/ext/BirdFlock/BoidResult.unity3d";
 var config = {
   width: 960, 
   height: 600,
